@@ -1,0 +1,9 @@
+import { configureStore } from '@reduxjs/toolkit';
+import contentReducer from './reducer';
+
+export const store = configureStore({
+  reducer: contentReducer,
+});
+
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
