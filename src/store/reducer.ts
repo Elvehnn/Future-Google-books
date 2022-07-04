@@ -1,46 +1,47 @@
-import { INITIAL_STATE } from '../constants/initial-state';
-import { Action } from '../constants/interfaces';
+import { Action, Book } from '../constants/interfaces';
+import { combineReducers } from '@reduxjs/toolkit';
+import { routerReducer } from 'react-router-redux';
+import { SET_BOOKS_ARRAY, SET_STICKY_HEADER, SET_TOTAL_ITEMS } from './actions';
 
-export default function contentReducer(state = INITIAL_STATE, action: Action) {
+export const stickyHeader = (state = false, action: Action) => {
   const { payload } = action;
 
   switch (action.type) {
-    // case 'content/change': {
-    //   let object = payload.path.slice(1, -1).reduce((acc, item) => acc[item], newState);
-    //   const index = payload.path.slice(-1).toString();
-    //   const destination = getDestination(payload.path, state);
-
-    //   if (typeof destination === 'boolean' && payload.typeOfValue === 'boolean') {
-    //     object[index] = payload.newValue === 'true' ? true : false;
-
-    //     return newState;
-    //   }
-
-    //   if (typeof destination === 'number' && payload.typeOfValue === 'number') {
-    //     object[index] = parseFloat(payload.newValue);
-
-    //     return newState;
-    //   }
-
-    //   if (typeof destination === 'string' && payload.typeOfValue !== 'object') {
-    //     object[index] = payload.newValue;
-
-    //     return newState;
-    //   }
-
-    //   object[index] = getObjectFromString(payload.newValue);
-
-    //   return newState;
-    // }
-
-    // case 'content/add': {
-    //   const object = payload.path.slice(1, -1).reduce((acc, item) => acc[item], newState);
-    //   object.push(getObjectFromString(payload.newValue));
-
-    //   return newState;
-    // }
+    case SET_STICKY_HEADER: {
+      return payload.isSticky;
+    }
 
     default:
       return state;
   }
-}
+};
+
+export const books = (state: Book[] = [], action: Action) => {
+  const { payload } = action;
+
+  switch (action.type) {
+    case SET_BOOKS_ARRAY: {
+      return Array.isArray(payload) ? [...state, ...payload] : [...state, payload];
+    }
+
+    default:
+      return state;
+  }
+};
+
+export const totalItems = (state = 0, action: Action) => {
+  const { payload } = action;
+
+  switch (action.type) {
+    case SET_TOTAL_ITEMS: {
+      return payload;
+    }
+
+    default:
+      return state;
+  }
+};
+
+const rootReducer = combineReducers({ routerReducer, stickyHeader, books, totalItems });
+
+export default rootReducer;

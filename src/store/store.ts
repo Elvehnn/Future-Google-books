@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import contentReducer from './reducer';
+import rootReducer from './reducer';
 
 export const store = configureStore({
-  reducer: contentReducer,
+  reducer: rootReducer,
 });
 
 export type AppDispatch = typeof store.dispatch;

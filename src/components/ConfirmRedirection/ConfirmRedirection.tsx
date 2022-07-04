@@ -7,7 +7,6 @@ import {
   DialogContentText,
   DialogActions,
 } from '@mui/material';
-import { localizationContent } from '../../localization/types';
 
 interface IConfirm {
   isOpen: boolean;
@@ -22,17 +21,17 @@ const ConfirmRedirection = (props: IConfirm) => {
   return (
     <>
       <Dialog open={props.isOpen}>
-        <DialogTitle color="secondary">{localizationContent.redirectionPopup.title}</DialogTitle>
+        <DialogTitle color="secondary">title</DialogTitle>
         <DialogContent>
           {props.child}
           <DialogContentText>{props.description}</DialogContentText>
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
           <Button variant="outlined" onClick={props.onCancel}>
-            {localizationContent.buttons.cancel}
+            Cancel
           </Button>
           <Button color="secondary" variant="contained" onClick={props.onConfirm}>
-            {localizationContent.buttons.redirect}
+            Redirect
           </Button>
         </DialogActions>
       </Dialog>

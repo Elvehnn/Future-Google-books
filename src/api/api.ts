@@ -1,17 +1,17 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { PATH } from '../constants/paths';
 
-const API_URL = 'https://afternoon-hamlet-46054.herokuapp.com';
+const API_URL = PATH.API_URL;
 
-axios.interceptors.request.use(function (config: AxiosRequestConfig) {
-  const token = JSON.parse(localStorage.getItem('user') as string)?.token || null;
+// axios.interceptors.request.use(function (config: AxiosRequestConfig) {
+//   const token = JSON.parse(localStorage.getItem('user') as string)?.token || null;
 
-  config.headers = {
-    Authorization: `Bearer ${token}`,
-  };
+//   config.headers = {
+//     Authorization: `Bearer ${token}`,
+//   };
 
-  return config;
-});
+//   return config;
+// });
 
 axios.interceptors.response.use(
   function (response) {
@@ -20,42 +20,14 @@ axios.interceptors.response.use(
   },
   function (error) {
     if (error.response.data.statusCode === 401) {
-      localStorage.removeItem('user');
-      window.location.replace(PATH.AUTHORIZATION_ERROR);
+      // localStorage.removeItem('user');
+      // window.location.replace(PATH.AUTHORIZATION_ERROR);
     }
   }
 );
 
-export const signUp = async (username: string, login: string, password: string) => {
-  return await axios
-    .post(`${API_URL}/signup`, {
-      name: username,
-      login: login,
-      password: password,
-    })
-    .then((res) => res.data);
-};
-
-export const signIn = async (login: string, password: string) => {
-  return await axios
-    .post(`${API_URL}/signin`, {
-      login: login,
-      password: password,
-    })
-    .then((res) => {
-      if (res.data.token) {
-        localStorage.setItem('user', JSON.stringify(res.data));
-      }
-      return res.data;
-    });
-};
-
-export const signOut = () => {
-  localStorage.removeItem('user');
-};
-
-export const getUserData = async (id: string) => {
-  return await axios.get(`${API_URL}/users/${id}`).then((res) => {
+export const getVolumesByTerms = async (searchString: string, apiKey: string) => {
+  return await axios.get(`${API_URL}?q=${searchString}`).then((res) => {
     return res.data;
   });
 };

@@ -1,4 +1,5 @@
 export const PATH = {
+  API_URL: 'https://www.googleapis.com/books/v1/volumes',
   BASE_URL: '/',
   SIGN_IN: '/signin',
   SIGN_UP: '/signup',
