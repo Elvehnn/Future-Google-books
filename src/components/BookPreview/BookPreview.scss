@@ -1,0 +1,22 @@
+.book {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__preview {
+    width: 100px;
+    height: 100%;
+    background-size: cover;
+  }
+
+  &__info {
+    width: 230px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+  }
+
+  &__category {
+    font-style: italic;
+  }
+}

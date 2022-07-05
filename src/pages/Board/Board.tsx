@@ -6,7 +6,6 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import AddIcon from '@mui/icons-material/Add';
 import ConfirmPopUp from '../../components/ConfirmPopUp/ConfirmPopUp';
 import { Header } from '../../components/Header/Header';
-import AddNewBoardForm from '../../components/Forms/AddNewBoardForm/AddNewBoardForm';
 // import Notification, { notify } from '../../components/Notification/Notification';
 import { Card, Typography } from '@mui/material';
 import Footer from '../../components/Footer/Footer';

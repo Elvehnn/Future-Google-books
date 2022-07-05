@@ -1,17 +1,7 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { PATH } from '../constants/paths';
 
 const API_URL = PATH.API_URL;
-
-// axios.interceptors.request.use(function (config: AxiosRequestConfig) {
-//   const token = JSON.parse(localStorage.getItem('user') as string)?.token || null;
-
-//   config.headers = {
-//     Authorization: `Bearer ${token}`,
-//   };
-
-//   return config;
-// });
 
 axios.interceptors.response.use(
   function (response) {
@@ -26,93 +16,10 @@ axios.interceptors.response.use(
   }
 );
 
-export const getVolumesByTerms = async (searchString: string, apiKey: string) => {
-  return await axios.get(`${API_URL}?q=${searchString}`).then((res) => {
-    return res.data;
-  });
-};
-
-export const editProfile = async (
-  username: string,
-  login: string,
-  password: string,
-  id: string
-) => {
+export const getVolumesByTerms = async (searchString: string, lastIndex: number) => {
   return await axios
-    .put(`${API_URL}/users/${id}`, {
-      name: username,
-      login: login,
-      password: password,
-    })
-    .then((res) => res.data);
+    .get(`${API_URL}?q=${searchString}&startIndex=${lastIndex}&maxResults=30`)
+    .then((res) => {
+      return res.data;
+    });
 };
-
-export const deleteUser = async (id: string) => {
-  return await axios.delete(`${API_URL}/users/${id}`).then((res) => res.data);
-};
-
-export const getUsers = async () => {
-  return await axios.get(`${API_URL}/users`).then((res) => res.data);
-};
-
-export const getBoards = async () => {
-  return await axios.get(`${API_URL}/boards`).then((res) => res.data);
-};
-
-export const getBoardById = async (id: string) => {
-  return await axios.get(`${API_URL}/boards/${id}`).then((res) => res.data);
-};
-
-export const addBoard = async (title: string, description: string) => {
-  return await axios
-    .post(`${API_URL}/boards`, {
-      title: title,
-      description: description,
-    })
-    .then((res) => res.data);
-};
-
-export const deleteBoard = async (boardId: string) => {
-  return await axios.delete(`${API_URL}/boards/${boardId}`);
-};
-
-export const addColumn = async (boardId: string, columnTitle: string) => {
-  return await axios.post(`${API_URL}/boards/${boardId}/columns`, {
-    title: columnTitle,
-  });
-};
-
-export const deleteColumn = async (boardId: string, columnId: string) => {
-  return await axios.delete(`${API_URL}/boards/${boardId}/columns/${columnId}`);
-};
-
-export const getTasks = async (boardId: string, columnId: string) => {
-  return await axios
-    .get(`${API_URL}/boards/${boardId}/columns/${columnId}/tasks`)
-    .then((res) => res.data);
-};
-
-export const getTaskById = async (boardId: string, columnId: string, taskId: string) => {
-  return await axios
-    .get(`${API_URL}/boards/${boardId}/columns/${columnId}/tasks/${taskId}`)
-    .then((res) => res.data);
-};
-
-// export const deleteTask = async (task: ITask) => {
-//   return await axios.delete(
-//     `${API_URL}/boards/${task.boardId}/columns/${task.columnId}/tasks/${task.id}`
-//   );
-// };
-
-// export const updateTask = async (task: ITask, newColumnId?: string) => {
-//   return await axios
-//     .put(`${API_URL}/boards/${task.boardId}/columns/${task.columnId}/tasks/${task.id}`, {
-//       title: task.title,
-//       order: task.order,
-//       description: task.description,
-//       userId: task.userId,
-//       boardId: task.boardId,
-//       columnId: newColumnId || task.columnId,
-//     })
-//     .then((res) => res.data);
-// };

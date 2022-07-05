@@ -46,10 +46,11 @@ const themeOptions = {
       fontSize: '1.6rem',
     },
     h5: {
-      fontSize: '1.3rem',
+      fontSize: '1.2rem',
+      lineHeight: '120%',
     },
     h6: {
-      fontSize: '1rem',
+      fontSize: '0.9rem',
     },
   },
 };

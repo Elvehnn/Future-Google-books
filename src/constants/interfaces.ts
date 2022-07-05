@@ -13,7 +13,7 @@ export interface Action {
 export interface Book {
   id: string;
   volumeInfo: {
-    imageLinks: string[];
+    imageLinks: { [key: string]: string };
     title: string;
     authors: string[];
     categories: string[];

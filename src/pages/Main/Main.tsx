@@ -4,18 +4,14 @@ import Typography from '@mui/material/Typography';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useContext, useEffect, useState } from 'react';
-import { deleteBoard, getBoards } from '../../api/api';
 import { Navigate, useNavigate } from 'react-router-dom';
-// import AddNewBoardForm from '../../components/Forms/AddNewBoardForm/AddNewBoardForm';
-import ConfirmPopUp from '../../components/ConfirmPopUp/ConfirmPopUp';
 import { PATH } from '../../constants/paths';
 import Footer from '../../components/Footer/Footer';
 // import Notification, { notify } from '../../components/Notification/Notification';
 import BoardsSkeleton from '../../components/Skeleton/BoardsSkeleton';
 import { useAppSelector } from '../../store/hooks';
 import { Book } from '../../constants/interfaces';
+import { BookPreview } from '../../components/BookPreview/BookPreview';
 
 export const Main = () => {
   const navigate = useNavigate();
@@ -23,14 +19,9 @@ export const Main = () => {
   const booksArray: Book[] = useAppSelector((state) => state.books);
   console.log(booksArray);
 
-  const booksToShow = booksArray.map((item) => <div key={item.id}>{item.volumeInfo.title}</div>);
+  const booksToShow = booksArray.map((item) => <BookPreview key={item.id} {...item} />);
 
-  // const { isCreateNewBoardOpen, boardsArray, setBoardsArray, userState } =
-  //   useContext(GlobalContext);
-  // const [isShowConfirmPopUp, setShowConfirmPopUp] = useState(false);
-  // const [boardToDelete, setBoardToDelete] = useState<IBoard | null>(null);
   // const [isLoading, setIsLoading] = useState(false);
-  // const [bgrUrl, setBgrUrl] = useState('' || localStorage.getItem('bgrUrl'));
 
   // useEffect(() => {
   //   setIsLoading(true);

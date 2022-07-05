@@ -8,16 +8,11 @@ import theme from '../../constants/theme';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
 import { errors } from '../../constants/errors';
 import ErrorBoundary from './ErrorBoundary';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { useAppDispatch } from '../../store/hooks';
 import { setStickyHeader } from '../../store/actions';
 
 function App() {
   const dispatch = useAppDispatch();
-
-  // const [userState, setUserState] = useState<IUser>(defaultGlobalState.userState);
-  // const [isCreateNewBoardOpen, setIsCreateNewBoardOpen] = useState(false);
-  // const [boardsArray, setBoardsArray] = useState<IBoard[]>([]);
-  // const [stickyHeader, setStickyHeader] = useState(false);
 
   const scrollHandler = () => {
     if (window.scrollY >= 5) {
@@ -37,12 +32,7 @@ function App() {
             <Routes>
               <Route path={PATH.BASE_URL} element={<Main />} />
               <Route path={PATH.NOT_FOUND} element={<ErrorPage error={errors['404']} />} />
-              {/*<Route path={PATH.MAIN_ROUTE} element={<Main />} />
-              <Route path={PATH.BOARD} element={<Board />} />
-                       <Route
-                path={PATH.AUTHORIZATION_ERROR}
-                element={<ErrorPage error={errors['401']} />}
-              /> */}
+              {/* <Route path={PATH.BOOK} element={<Book />} /> */}
             </Routes>
           </Router>
         </ThemeProvider>

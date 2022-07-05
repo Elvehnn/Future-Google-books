@@ -19,14 +19,11 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { getVolumesByTerms } from '../../api/api';
 import { setBooksArray, setTotalItems } from '../../store/actions';
+import { Book } from '../../constants/interfaces';
 
 type FormInputs = {
   searchValue: string;
 };
-
-interface IHeaderProps {
-  setMainPageBgr?: () => void;
-}
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -64,10 +61,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export const Header: React.FC<IHeaderProps> = (props) => {
+export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const stickyHeader = useAppSelector((state) => state.stickyHeader);
-  const [apiKey, setApiKey] = useState('AIzaSyAhjeh8DuNmdp0Z0C7ldKLwcFvCln0WjzM');
+  const booksArray: Book[] = useAppSelector((state) => state.books);
+
   const {
     register,
     handleSubmit,
@@ -83,7 +81,7 @@ export const Header: React.FC<IHeaderProps> = (props) => {
       .filter((element) => element)
       .join('+');
 
-    const searchResults = await getVolumesByTerms(searchString, apiKey);
+    const searchResults = await getVolumesByTerms(searchString, booksArray.length);
 
     dispatch(setBooksArray(searchResults.items));
     dispatch(setTotalItems(searchResults.totalItems));
