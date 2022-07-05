@@ -20,6 +20,7 @@ import InputBase from '@mui/material/InputBase';
 import { getVolumesByTerms } from '../../api/api';
 import { setBooksArray, setTotalItems } from '../../store/actions';
 import { Book } from '../../constants/interfaces';
+import { API_KEY } from '../../constants/constants';
 
 type FormInputs = {
   searchValue: string;
@@ -81,7 +82,7 @@ export const Header: React.FC = () => {
       .filter((element) => element)
       .join('+');
 
-    const searchResults = await getVolumesByTerms(searchString, booksArray.length);
+    const searchResults = await getVolumesByTerms(searchString, booksArray.length, API_KEY);
 
     dispatch(setBooksArray(searchResults.items));
     dispatch(setTotalItems(searchResults.totalItems));
@@ -99,22 +100,11 @@ export const Header: React.FC = () => {
   return (
     <AppBar
       className="header"
-      style={
-        stickyHeader
-          ? { height: '50px', transition: '0.5s' }
-          : { height: '200px', transition: '0.5s' }
-      }
-      sx={{ justifyContent: 'center', flexGrow: 1 }}
+      style={{ height: '200px', transition: '0.5s' }}
+      sx={{ justifyContent: 'center', flexGrow: 1, position: 'fixed' }}
     >
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <Toolbar
-          style={
-            stickyHeader
-              ? { height: '50px', transition: '0.5s' }
-              : { height: '200px', transition: '0.5s' }
-          }
-          sx={{ minHeight: '50px', justifyContent: 'center', p: '0', width: '80%' }}
-        >
+        <Toolbar sx={{ minHeight: '50px', justifyContent: 'center', p: '0', width: '80%' }}>
           <Search>
             <SearchIconWrapper>
               <SearchIcon />

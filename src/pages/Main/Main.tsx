@@ -12,12 +12,17 @@ import BoardsSkeleton from '../../components/Skeleton/BoardsSkeleton';
 import { useAppSelector } from '../../store/hooks';
 import { Book } from '../../constants/interfaces';
 import { BookPreview } from '../../components/BookPreview/BookPreview';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useState } from 'react';
 
 export const Main = () => {
-  const navigate = useNavigate();
   const totalItems = useAppSelector((state) => state.totalItems);
   const booksArray: Book[] = useAppSelector((state) => state.books);
-  console.log(booksArray);
+  const [loading, setLoading] = useState(false);
+
+  const handleClick = () => {
+    setLoading(true);
+  };
 
   const booksToShow = booksArray.map((item) => <BookPreview key={item.id} {...item} />);
 
@@ -102,22 +107,29 @@ export const Main = () => {
   // });
 
   return (
-    <>
-      <Header />
+    <main className="main">
+      {totalItems ? (
+        <Typography variant="h4" align="center" color="text.secondary" sx={{ p: '15px' }}>
+          Found {totalItems} items
+        </Typography>
+      ) : null}
 
-      <main className="main">
-        {totalItems && (
-          <Typography variant="h4" align="center" color="text.secondary" sx={{ p: '15px' }}>
-            {totalItems}
-          </Typography>
-        )}
-        <div className="cards-container">{booksToShow}</div>
-        {/* {isLoading ? <BoardsSkeleton /> : <div className="boards__container">{boardsToShow}</div>} */}
-      </main>
+      <div className="cards-container">{booksToShow}</div>
 
+      {booksArray.length ? (
+        <LoadingButton
+          size="small"
+          onClick={handleClick}
+          loading={loading}
+          // loadingPosition="end"
+          variant="contained"
+        >
+          Load more
+        </LoadingButton>
+      ) : null}
+      {/* {isLoading ? <BoardsSkeleton /> : <div className="boards__container">{boardsToShow}</div>} */}
       {/* <Notification /> */}
-      <Footer />
-    </>
+    </main>
   );
 };
 

@@ -3,6 +3,7 @@ export interface ActionPayload {
   searchValue?: string;
   searchResult?: Book[];
   totalItems?: number;
+  selectedBook?: Book | null;
 }
 
 export interface Action {
@@ -17,5 +18,6 @@ export interface Book {
     title: string;
     authors: string[];
     categories: string[];
+    description: string;
   };
 }

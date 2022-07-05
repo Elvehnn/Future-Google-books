@@ -47,10 +47,11 @@ const themeOptions = {
     },
     h5: {
       fontSize: '1.2rem',
-      lineHeight: '120%',
+      lineHeight: '130%',
     },
     h6: {
       fontSize: '0.9rem',
+      lineHeight: '120%',
     },
   },
 };
