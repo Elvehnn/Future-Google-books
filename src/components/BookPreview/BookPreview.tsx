@@ -43,8 +43,6 @@ export const BookPreview = (props: Book) => {
           {props.volumeInfo.authors && props.volumeInfo.authors.join(',  ')}
         </Typography>
       </div>
-
-      {/* <Notification /> */}
     </Card>
   );
 };
