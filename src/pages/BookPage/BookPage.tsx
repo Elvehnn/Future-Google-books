@@ -1,31 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import Button from '@mui/material/Button';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import AddIcon from '@mui/icons-material/Add';
-import ConfirmPopUp from '../../components/ConfirmPopUp/ConfirmPopUp';
-import { Header } from '../../components/Header/Header';
-// import Notification, { notify } from '../../components/Notification/Notification';
-import { Card, Typography } from '@mui/material';
-import Footer from '../../components/Footer/Footer';
+import { Typography } from '@mui/material';
 import './BookPage.scss';
 import Box from '@mui/system/Box';
-import TitleSkeleton from '../../components/Skeleton/TitleSkeleton';
-import ColumnSkeleton from '../../components/Skeleton/ColumnSkeleton';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Book } from '../../constants/interfaces';
 import { PATH } from '../../constants/paths';
 import { API_KEY } from '../../constants/constants';
 import { getVolumeById } from '../../api/api';
-import { setSelectedBook } from '../../store/actions';
 
 export const BookPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const params = useParams<{ id: string }>().id || '';
   const [bookToShow, setBookToShow] = useState<Book | null>(null);
-  // console.log(selectedBook);
 
   useEffect(() => {
     // setIsLoading(true);
@@ -85,38 +75,8 @@ export const BookPage = () => {
               <KeyboardBackspaceIcon sx={{ fontSize: '35px' }} />
             </Button>
           </div>
-
-          {/* <Box sx={{ display: 'flex', alignItems: 'center' }}> */}
-          {/* {isLoading ? (
-            <TitleSkeleton />
-          ) : (
-            board && (
-              <Card
-                sx={{
-                  minWidth: 0.6,
-                  overflow: 'unset',
-                  mt: '18px',
-                  opacity: 0.9,
-                  boxShadow: 'none',
-                  p: '16px',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography variant="h4" color="text.secondary" sx={{ mx: '10px' }}>
-                  {board?.title}:
-                </Typography>
-                <Typography variant="h5" sx={{ fontSize: 16, pt: '1px' }} color="text.primary">
-                  {board?.description}
-                </Typography>
-              </Card>
-            )
-          )} */}
-          {/* </Box> */}
         </div>
       )}
-
-      {/* <Notification /> */}
     </div>
   );
 };

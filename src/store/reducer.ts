@@ -3,32 +3,27 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { routerReducer } from 'react-router-redux';
 import {
   INCREMENT_START_INDEX,
+  IS_LOADING,
+  RESET_BOOKS_ARRAY,
+  RESET_ERROR,
+  RESET_TOTAL_ITEMS,
   SET_BOOKS_ARRAY,
+  SET_ERROR,
   SET_SEARCH_VALUE,
   SET_SELECTED_BOOK,
-  SET_STICKY_HEADER,
   SET_TOTAL_ITEMS,
 } from './actions';
 
-export const stickyHeader = (state = false, action: Action) => {
-  const { payload } = action;
-
-  switch (action.type) {
-    case SET_STICKY_HEADER: {
-      return payload.isSticky;
-    }
-
-    default:
-      return state;
-  }
-};
-
-export const books = (state: Book[] = [], action: Action) => {
+export const books = (state: Book[] = [], action: Action): Book[] => {
   const { payload } = action;
 
   switch (action.type) {
     case SET_BOOKS_ARRAY: {
       return Array.isArray(payload) ? [...state, ...payload] : [...state, payload];
+    }
+
+    case RESET_BOOKS_ARRAY: {
+      return [];
     }
 
     default:
@@ -42,6 +37,10 @@ export const totalItems = (state = 0, action: Action) => {
   switch (action.type) {
     case SET_TOTAL_ITEMS: {
       return payload;
+    }
+
+    case RESET_TOTAL_ITEMS: {
+      return 0;
     }
 
     default:
@@ -87,14 +86,45 @@ export const searchValue = (state = '', action: Action) => {
   }
 };
 
+export const isLoading = (state = false, action: Action) => {
+  const { payload } = action;
+
+  switch (action.type) {
+    case IS_LOADING: {
+      return payload;
+    }
+
+    default:
+      return state;
+  }
+};
+
+export const error = (state = { title: '', description: '' }, action: Action) => {
+  const { payload } = action;
+
+  switch (action.type) {
+    case SET_ERROR: {
+      return payload;
+    }
+
+    case RESET_ERROR: {
+      return { title: '', description: '' };
+    }
+
+    default:
+      return state;
+  }
+};
+
 const rootReducer = combineReducers({
   routerReducer,
-  stickyHeader,
   books,
   totalItems,
   selectedBook,
   searchValue,
   startIndex,
+  isLoading,
+  error,
 });
 
 export default rootReducer;

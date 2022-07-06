@@ -1,14 +1,13 @@
 import './Main.scss';
 import Typography from '@mui/material/Typography';
-// import Notification, { notify } from '../../components/Notification/Notification';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Book } from '../../constants/interfaces';
 import { BookPreview } from '../../components/BookPreview/BookPreview';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
 import { getVolumesByTerms } from '../../api/api';
-import { API_KEY } from '../../constants/constants';
-import { incrementStartIndex, setBooksArray } from '../../store/actions';
+import { incrementStartIndex, setBooksArray, setIsLoading } from '../../store/actions';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const Main = () => {
   const dispatch = useAppDispatch();
@@ -16,18 +15,19 @@ export const Main = () => {
   const startIndex = useAppSelector((state) => state.startIndex);
   const booksArray: Book[] = useAppSelector((state) => state.books);
   const searchValue = useAppSelector((state) => state.searchValue);
-  const [loading, setLoading] = useState(false);
+  const isLoading = useAppSelector((state) => state.isLoading);
+
   const [paginationDisabled, setPaginationDisabled] = useState(false);
 
   const handleLoadMoreClick = async () => {
-    setLoading(true);
+    dispatch(setIsLoading(true));
 
     const searchOptions = `&startIndex=${startIndex}`;
-    const searchResults = await getVolumesByTerms(searchValue, searchOptions, API_KEY);
+    const searchResults = await getVolumesByTerms(searchValue, searchOptions);
 
     dispatch(setBooksArray(searchResults.items));
     dispatch(incrementStartIndex());
-    setLoading(false);
+    dispatch(setIsLoading(false));
     setPaginationDisabled(searchResults.items.length < 30);
   };
 
@@ -40,16 +40,18 @@ export const Main = () => {
       ) : null}
 
       <div className="cards-container">
-        {booksArray.map((book) => {
-          return <BookPreview key={book.id} {...book} />;
-        })}
+        {booksArray.length
+          ? booksArray.map((book) => {
+              return <BookPreview key={book.id} {...book} />;
+            })
+          : null}
       </div>
 
       {booksArray.length ? (
         <LoadingButton
           size="medium"
           onClick={handleLoadMoreClick}
-          loading={loading}
+          loading={isLoading}
           variant="contained"
           disabled={paginationDisabled}
         >
@@ -57,7 +59,7 @@ export const Main = () => {
         </LoadingButton>
       ) : null}
 
-      {/* <Notification /> */}
+      {isLoading && <CircularProgress sx={{ position: 'absolute' }} />}
     </main>
   );
 };

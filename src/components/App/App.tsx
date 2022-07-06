@@ -6,43 +6,32 @@ import { PATH } from '../../constants/paths';
 import './App.scss';
 import theme from '../../constants/theme';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
-import { errors } from '../../constants/errors';
-import ErrorBoundary from './ErrorBoundary';
-import { useAppDispatch } from '../../store/hooks';
-import { setStickyHeader } from '../../store/actions';
+import { useAppSelector } from '../../store/hooks';
 import { BookPage } from '../../pages/BookPage/BookPage';
 import { Header } from '../Header/Header';
 import Footer from '../Footer/Footer';
+import { ErrorObject } from '../../constants/interfaces';
 
 function App() {
-  const dispatch = useAppDispatch();
-
-  // const scrollHandler = () => {
-  //   if (window.scrollY >= 5) {
-  //     dispatch(setStickyHeader(true));
-  //   } else {
-  //     dispatch(setStickyHeader(false));
-  //   }
-  // };
-
-  // window.addEventListener('scroll', scrollHandler);
+  const error: ErrorObject = useAppSelector((state) => state.error);
 
   return (
-    <ErrorBoundary>
-      <div className="app">
-        <ThemeProvider theme={theme}>
-          <Header />
-          <Router>
-            <Routes>
-              <Route path={PATH.BASE_URL} element={<Main />} />
-              <Route path={PATH.NOT_FOUND} element={<ErrorPage error={errors['404']} />} />
-              <Route path={PATH.BOOK} element={<BookPage />} />
-            </Routes>
-          </Router>
-          <Footer />
-        </ThemeProvider>
-      </div>
-    </ErrorBoundary>
+    <div className="app">
+      <ThemeProvider theme={theme}>
+        <Header />
+        <Router>
+          <Routes>
+            <Route
+              path={PATH.BASE_URL}
+              element={error.title ? <ErrorPage {...error} /> : <Main />}
+            />
+            <Route path={PATH.NOT_FOUND} element={<h3>Not Found</h3>} />
+            <Route path={PATH.BOOK} element={<BookPage />} />
+          </Routes>
+        </Router>
+        <Footer />
+      </ThemeProvider>
+    </div>
   );
 }
 

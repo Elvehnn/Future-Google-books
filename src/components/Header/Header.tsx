@@ -7,20 +7,19 @@ import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import { PATH } from '../../constants/paths';
 import { Link as RouterLink } from 'react-router-dom';
-import { useState } from 'react';
-import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import MenuIcon from '@mui/icons-material/Menu';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
 import { getVolumesByTerms } from '../../api/api';
-import { setBooksArray, setSearchValue, setTotalItems } from '../../store/actions';
-import { Book } from '../../constants/interfaces';
-import { API_KEY, ITEMS_PER_PAGE } from '../../constants/constants';
+import {
+  resetBooksArray,
+  resetErrorObject,
+  resetTotalItems,
+  setBooksArray,
+  setErrorObject,
+  setIsLoading,
+  setSearchValue,
+  setTotalItems,
+} from '../../store/actions';
 import TextField from '@mui/material/TextField';
 
 type FormInputs = {
@@ -29,25 +28,53 @@ type FormInputs = {
 
 export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-  const booksArray: Book[] = useAppSelector((state) => state.books);
+  const isLoading = useAppSelector((state) => state.isLoading);
 
   const {
     register,
     handleSubmit,
-    reset,
-    setError,
-    clearErrors,
     formState: { errors },
   } = useForm<FormInputs>();
 
   const onSubmit = async (data: FormInputs) => {
+    if (/^\s*$/.test(data.searchValue)) {
+      const error = {
+        title: 'Пустой поисковый запрос',
+        description: '',
+      };
+
+      dispatch(setErrorObject(error));
+      return;
+    }
+
+    dispatch(resetErrorObject());
+    dispatch(setIsLoading(true));
+    dispatch(resetTotalItems());
+    dispatch(resetBooksArray());
+
     const searchOptions = '';
     const searchValue = encodeURIComponent(data.searchValue);
-    const searchResults = await getVolumesByTerms(searchValue, searchOptions, API_KEY);
 
-    dispatch(setBooksArray(searchResults.items));
-    dispatch(setTotalItems(searchResults.totalItems));
-    dispatch(setSearchValue(searchValue));
+    try {
+      const searchResults = await getVolumesByTerms(searchValue, searchOptions);
+
+      dispatch(setIsLoading(false));
+
+      if (searchResults.totalItems > 0) {
+        dispatch(setBooksArray(searchResults.items));
+        dispatch(setTotalItems(searchResults.totalItems));
+        dispatch(setSearchValue(searchValue));
+
+        return;
+      }
+
+      throw new Error('Ничего не найдено');
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorObject = { title: error.name, description: error.message };
+        dispatch(setErrorObject(errorObject));
+      }
+    }
   };
 
   return (
@@ -62,7 +89,7 @@ export const Header: React.FC = () => {
       }}
     >
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <Toolbar sx={{ minHeight: '50px', justifyContent: 'center', p: '0', width: '80%' }}>
+        <div className="input-container">
           <TextField
             variant="outlined"
             className="search-input"
@@ -77,21 +104,23 @@ export const Header: React.FC = () => {
             placeholder="Type here for searching…"
             {...register('searchValue', { required: 'Nothing to search!' })}
           />
+          {errors.searchValue && <p>Value is required!</p>}
+        </div>
 
-          <Button
-            variant="text"
-            sx={{
-              width: '56px',
-              height: '56px',
-              backgroundColor: '#87A8EC',
-              borderRadius: '0 4px 4px 0',
-            }}
-            className="search-btn"
-            onClick={handleSubmit(onSubmit)}
-          >
-            <SearchIcon sx={{ color: '#fff' }} />
-          </Button>
-        </Toolbar>
+        <Button
+          variant="text"
+          sx={{
+            width: '56px',
+            height: '56px',
+            backgroundColor: '#87A8EC',
+            borderRadius: '0 4px 4px 0',
+          }}
+          className="search-btn"
+          onClick={handleSubmit(onSubmit)}
+          disabled={isLoading}
+        >
+          <SearchIcon sx={{ color: '#fff' }} />
+        </Button>
       </form>
     </AppBar>
   );

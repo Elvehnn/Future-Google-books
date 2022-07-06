@@ -4,6 +4,7 @@ export interface ActionPayload {
   searchResult?: Book[];
   totalItems?: number;
   selectedBook?: Book | null;
+  error: ErrorObject;
 }
 
 export interface Action {
@@ -20,4 +21,8 @@ export interface Book {
     categories: string[];
     description: string;
   };
+}
+export interface ErrorObject {
+  title: string;
+  description: string;
 }
