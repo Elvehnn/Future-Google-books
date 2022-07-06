@@ -23,11 +23,11 @@ axios.interceptors.response.use(
 
 export const getVolumesByTerms = async (
   searchString: string,
-  lastIndex: number,
+  searchOptions: string,
   apiKey: string
 ) => {
   return await axios
-    .get(`${API_URL}?q=${searchString}&startIndex=${lastIndex}&maxResults=30&key=${apiKey}`)
+    .get(`${API_URL}?q=${searchString}${searchOptions}&maxResults=30`)
     .then((res) => {
       return res.data;
     });

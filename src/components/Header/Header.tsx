@@ -18,9 +18,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { getVolumesByTerms } from '../../api/api';
-import { setBooksArray, setTotalItems } from '../../store/actions';
+import { setBooksArray, setSearchValue, setTotalItems } from '../../store/actions';
 import { Book } from '../../constants/interfaces';
-import { API_KEY } from '../../constants/constants';
+import { API_KEY, ITEMS_PER_PAGE } from '../../constants/constants';
 
 type FormInputs = {
   searchValue: string;
@@ -77,15 +77,13 @@ export const Header: React.FC = () => {
   } = useForm<FormInputs>();
 
   const onSubmit = async (data: FormInputs) => {
-    const searchString = data.searchValue
-      .split(' ')
-      .filter((element) => element)
-      .join('+');
-
-    const searchResults = await getVolumesByTerms(searchString, booksArray.length, API_KEY);
+    const searchOptions = '';
+    const searchValue = encodeURIComponent(data.searchValue);
+    const searchResults = await getVolumesByTerms(searchValue, searchOptions, API_KEY);
 
     dispatch(setBooksArray(searchResults.items));
     dispatch(setTotalItems(searchResults.totalItems));
+    dispatch(setSearchValue(searchValue));
   };
   // const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 

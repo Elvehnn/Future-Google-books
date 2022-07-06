@@ -33,7 +33,7 @@ export const BookPreview = (props: Book) => {
       <div
         className="book__preview"
         style={{
-          background: `url('${props.volumeInfo.imageLinks.smallThumbnail}') no-repeat center center `,
+          background: `url('${props.volumeInfo.imageLinks?.smallThumbnail}') no-repeat center center `,
           backgroundSize: 'contain',
         }}
       ></div>

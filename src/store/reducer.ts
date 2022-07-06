@@ -1,7 +1,14 @@
 import { Action, Book } from '../constants/interfaces';
 import { combineReducers } from '@reduxjs/toolkit';
 import { routerReducer } from 'react-router-redux';
-import { SET_BOOKS_ARRAY, SET_SELECTED_BOOK, SET_STICKY_HEADER, SET_TOTAL_ITEMS } from './actions';
+import {
+  INCREMENT_START_INDEX,
+  SET_BOOKS_ARRAY,
+  SET_SEARCH_VALUE,
+  SET_SELECTED_BOOK,
+  SET_STICKY_HEADER,
+  SET_TOTAL_ITEMS,
+} from './actions';
 
 export const stickyHeader = (state = false, action: Action) => {
   const { payload } = action;
@@ -42,11 +49,36 @@ export const totalItems = (state = 0, action: Action) => {
   }
 };
 
+export const startIndex = (state = 150, action: Action) => {
+  switch (action.type) {
+    case INCREMENT_START_INDEX: {
+      const newstate = state + 30;
+      return newstate;
+    }
+
+    default:
+      return state;
+  }
+};
+
 export const selectedBook = (state = null, action: Action) => {
   const { payload } = action;
 
   switch (action.type) {
     case SET_SELECTED_BOOK: {
+      return payload;
+    }
+
+    default:
+      return state;
+  }
+};
+
+export const searchValue = (state = '', action: Action) => {
+  const { payload } = action;
+
+  switch (action.type) {
+    case SET_SEARCH_VALUE: {
       return payload;
     }
 
@@ -61,6 +93,8 @@ const rootReducer = combineReducers({
   books,
   totalItems,
   selectedBook,
+  searchValue,
+  startIndex,
 });
 
 export default rootReducer;
