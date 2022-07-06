@@ -61,7 +61,7 @@ export const Main = () => {
           : null}
       </div>
 
-      {booksArray.length ? (
+      {booksArray.length && booksArray.length >= 30 ? (
         <LoadingButton
           size="medium"
           onClick={handleLoadMoreClick}

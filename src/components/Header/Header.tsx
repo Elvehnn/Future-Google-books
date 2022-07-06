@@ -85,14 +85,13 @@ export const Header: React.FC = () => {
   return (
     <AppBar
       className="header"
-      style={{ height: '200px', transition: '0.5s' }}
       sx={{
-        justifyContent: 'center',
         flexGrow: 1,
         position: 'fixed',
         background: `url('./ZoCtEVBYKzo.jpg') no-repeat top center / cover`,
       }}
     >
+      <h1 className="header__title">Book search</h1>
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="search">
           <div className="search__input-container">
@@ -100,7 +99,6 @@ export const Header: React.FC = () => {
               variant="outlined"
               className="search-input"
               sx={{
-                width: '100%',
                 height: '100%',
                 backgroundColor: '#fff',
                 borderRadius: '4px 0 0 4px',
@@ -110,23 +108,24 @@ export const Header: React.FC = () => {
               placeholder="Type here for searching…"
               {...register('searchValue', { required: 'Nothing to search!' })}
             />
-            {errors.searchValue && <p>Value is required!</p>}
+            <Button
+              variant="text"
+              sx={{
+                padding: '6px 16px',
+                minWidth: '0',
+                height: '100%',
+                backgroundColor: '#87A8EC',
+                borderRadius: '0 4px 4px 0',
+              }}
+              className="search__btn"
+              onClick={handleSubmit(onSubmit)}
+              disabled={isLoading}
+            >
+              <SearchIcon sx={{ color: '#fff' }} />
+            </Button>
           </div>
 
-          <Button
-            variant="text"
-            sx={{
-              width: '56px',
-              height: '56px',
-              backgroundColor: '#87A8EC',
-              borderRadius: '0 4px 4px 0',
-            }}
-            className="search__btn"
-            onClick={handleSubmit(onSubmit)}
-            disabled={isLoading}
-          >
-            <SearchIcon sx={{ color: '#fff' }} />
-          </Button>
+          {errors.searchValue && <p>Value is required!</p>}
         </div>
 
         <div className="search__options">
