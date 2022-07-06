@@ -49,7 +49,7 @@ export const totalItems = (state = 0, action: Action) => {
   }
 };
 
-export const startIndex = (state = 150, action: Action) => {
+export const startIndex = (state = 30, action: Action) => {
   switch (action.type) {
     case INCREMENT_START_INDEX: {
       const newstate = state + 30;

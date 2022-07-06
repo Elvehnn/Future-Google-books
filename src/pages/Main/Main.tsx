@@ -1,13 +1,6 @@
 import './Main.scss';
 import Typography from '@mui/material/Typography';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { PATH } from '../../constants/paths';
-import Footer from '../../components/Footer/Footer';
 // import Notification, { notify } from '../../components/Notification/Notification';
-import BoardsSkeleton from '../../components/Skeleton/BoardsSkeleton';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Book } from '../../constants/interfaces';
 import { BookPreview } from '../../components/BookPreview/BookPreview';
@@ -15,7 +8,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
 import { getVolumesByTerms } from '../../api/api';
 import { API_KEY } from '../../constants/constants';
-import { incrementStartIndex, setBooksArray, setTotalItems } from '../../store/actions';
+import { incrementStartIndex, setBooksArray } from '../../store/actions';
 
 export const Main = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +17,7 @@ export const Main = () => {
   const booksArray: Book[] = useAppSelector((state) => state.books);
   const searchValue = useAppSelector((state) => state.searchValue);
   const [loading, setLoading] = useState(false);
+  const [paginationDisabled, setPaginationDisabled] = useState(false);
 
   const handleLoadMoreClick = async () => {
     setLoading(true);
@@ -34,6 +28,7 @@ export const Main = () => {
     dispatch(setBooksArray(searchResults.items));
     dispatch(incrementStartIndex());
     setLoading(false);
+    setPaginationDisabled(searchResults.items.length < 30);
   };
 
   return (
@@ -46,7 +41,6 @@ export const Main = () => {
 
       <div className="cards-container">
         {booksArray.map((book) => {
-          // console.log(book);
           return <BookPreview key={book.id} {...book} />;
         })}
       </div>
@@ -57,11 +51,12 @@ export const Main = () => {
           onClick={handleLoadMoreClick}
           loading={loading}
           variant="contained"
+          disabled={paginationDisabled}
         >
           Load more
         </LoadingButton>
       ) : null}
-      {/* {isLoading ? <BoardsSkeleton /> : <div className="boards__container">{boardsToShow}</div>} */}
+
       {/* <Notification /> */}
     </main>
   );

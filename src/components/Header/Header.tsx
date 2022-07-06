@@ -21,50 +21,14 @@ import { getVolumesByTerms } from '../../api/api';
 import { setBooksArray, setSearchValue, setTotalItems } from '../../store/actions';
 import { Book } from '../../constants/interfaces';
 import { API_KEY, ITEMS_PER_PAGE } from '../../constants/constants';
+import TextField from '@mui/material/TextField';
 
 type FormInputs = {
   searchValue: string;
 };
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  height: '40px',
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '100%',
-    },
-  },
-}));
-
 export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-  const stickyHeader = useAppSelector((state) => state.stickyHeader);
   const booksArray: Book[] = useAppSelector((state) => state.books);
 
   const {
@@ -85,35 +49,48 @@ export const Header: React.FC = () => {
     dispatch(setTotalItems(searchResults.totalItems));
     dispatch(setSearchValue(searchValue));
   };
-  // const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
-
-  // const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorElNav(event.currentTarget);
-  // };
-
-  // const handleCloseNavMenu = () => {
-  //   setAnchorElNav(null);
-  // };
 
   return (
     <AppBar
       className="header"
       style={{ height: '200px', transition: '0.5s' }}
-      sx={{ justifyContent: 'center', flexGrow: 1, position: 'fixed' }}
+      sx={{
+        justifyContent: 'center',
+        flexGrow: 1,
+        position: 'fixed',
+        background: `url('./ZoCtEVBYKzo.jpg') no-repeat top center / cover`,
+      }}
     >
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
         <Toolbar sx={{ minHeight: '50px', justifyContent: 'center', p: '0', width: '80%' }}>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              sx={{ width: '100%' }}
-              placeholder="Type here for searching…"
-              {...register('searchValue', { required: 'Nothing to search!' })}
-              // className={errors.searchValue ? `form__path-input error` : `form__path-input`}
-            />
-          </Search>
+          <TextField
+            variant="outlined"
+            className="search-input"
+            sx={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#fff',
+              borderRadius: '4px 0 0 4px',
+              outline: 'none',
+              border: 'none',
+            }}
+            placeholder="Type here for searching…"
+            {...register('searchValue', { required: 'Nothing to search!' })}
+          />
+
+          <Button
+            variant="text"
+            sx={{
+              width: '56px',
+              height: '56px',
+              backgroundColor: '#87A8EC',
+              borderRadius: '0 4px 4px 0',
+            }}
+            className="search-btn"
+            onClick={handleSubmit(onSubmit)}
+          >
+            <SearchIcon sx={{ color: '#fff' }} />
+          </Button>
         </Toolbar>
       </form>
     </AppBar>
