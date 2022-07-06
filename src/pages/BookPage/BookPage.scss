@@ -6,9 +6,18 @@
   align-items: center;
   column-gap: 40px;
 
-  &__image {
+  &__image-container {
     width: 35%;
-    height: 70%;
+    height: 25vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .image {
+      display: inline-block;
+      width: auto;
+      height: 100%;
+    }
   }
 
   &__info {

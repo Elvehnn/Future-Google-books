@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import { Typography } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 import './BookPage.scss';
-import Box from '@mui/system/Box';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { Book } from '../../constants/interfaces';
 import { PATH } from '../../constants/paths';
 import { API_KEY } from '../../constants/constants';
@@ -13,39 +11,28 @@ import { getVolumeById } from '../../api/api';
 
 export const BookPage = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const params = useParams<{ id: string }>().id || '';
   const [bookToShow, setBookToShow] = useState<Book | null>(null);
 
   useEffect(() => {
-    // setIsLoading(true);
-    getVolumeById(params, API_KEY).then(
-      (response) => {
-        if (response) {
-          setBookToShow(response);
-        }
-      },
-      (error) => {
-        const resMessage =
-          (error.response && error.response.data && error.response.data.message) ||
-          error.message ||
-          error.toString();
-        // setIsLoading(false);
-        // notify(resMessage);
+    getVolumeById(params, API_KEY).then((response) => {
+      if (response) {
+        setBookToShow(response);
       }
-    );
+    });
   }, [params]);
 
   return (
     <div className="main">
       {bookToShow && (
         <div className="book-page">
-          <div
-            className="book-page__image"
-            style={{
-              background: `url('${bookToShow.volumeInfo.imageLinks.thumbnail}') no-repeat center center / contain`,
-            }}
-          ></div>
+          <div className="book-page__image-container">
+            <img
+              src={`${bookToShow.volumeInfo.imageLinks.thumbnail}`}
+              alt="book-cover"
+              className="image"
+            />
+          </div>
           <div className="book-page__info">
             <Typography className="book-page__categories" variant="h5">
               {bookToShow.volumeInfo.categories?.join(' / ')}
@@ -77,6 +64,8 @@ export const BookPage = () => {
           </div>
         </div>
       )}
+
+      {!bookToShow && <CircularProgress sx={{ position: 'absolute' }} />}
     </div>
   );
 };
