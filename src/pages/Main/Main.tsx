@@ -13,6 +13,8 @@ import {
   setIsLoading,
 } from '../../store/actions';
 import CircularProgress from '@mui/material/CircularProgress';
+import Fab from '@mui/material/Fab';
+import NavigationIcon from '@mui/icons-material/Navigation';
 
 export const Main = () => {
   const dispatch = useAppDispatch();
@@ -72,6 +74,14 @@ export const Main = () => {
           Load more
         </LoadingButton>
       ) : null}
+
+      <Fab
+        variant="circular"
+        onClick={() => window.scrollTo(0, 0)}
+        sx={{ position: 'sticky', bottom: '75px', alignSelf: 'flex-end' }}
+      >
+        <NavigationIcon />
+      </Fab>
 
       {isLoading && <CircularProgress sx={{ position: 'absolute' }} />}
     </main>

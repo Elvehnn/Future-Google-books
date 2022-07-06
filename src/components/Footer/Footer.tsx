@@ -2,35 +2,36 @@ import './Footer.scss';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import Copyright from '../Copyright/Copyright';
 
 const Footer = () => {
   return (
     <Box className="footer" component="footer">
-      <Box className="footer__container">
-        <div className="footer__side">
-          <Link
-            color="inherit"
-            href="https://rs.school/react/"
-            target="_blank"
-            className="footer__RS-link"
-            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}
-          >
-            <img className="rs-logo" src="/rs_school_js.svg" alt="rs logo" />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              align="left"
-              sx={{ display: { xs: 'none', md: 'flex' } }}
-            >
-              Online course «React developing»
-            </Typography>
+      <Box className="footer__container" sx={{ justifyContent: 'center' }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          align="right"
+          sx={{ display: { xs: 'none', md: 'block' } }}
+        >
+          Copyright ©
+          <Link color="inherit" href="https://github.com/Elvehnn" target="_blank">
+            Elena Shashina
           </Link>
-        </div>
+          , 2022.
+        </Typography>
 
-        <div className="footer__side">
-          <Copyright />
-        </div>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          align="right"
+          sx={{ display: { xs: 'block', md: 'none' } }}
+        >
+          Copyright ©
+          <Link color="inherit" href="https://github.com/Elvehnn" target="_blank">
+            Elena
+          </Link>
+          , 2022.
+        </Typography>
       </Box>
     </Box>
   );
