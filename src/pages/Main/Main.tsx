@@ -6,7 +6,12 @@ import { BookPreview } from '../../components/BookPreview/BookPreview';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
 import { getVolumesByTerms } from '../../api/api';
-import { incrementStartIndex, setBooksArray, setIsLoading } from '../../store/actions';
+import {
+  incrementStartIndex,
+  setBooksArray,
+  setErrorObject,
+  setIsLoading,
+} from '../../store/actions';
 import CircularProgress from '@mui/material/CircularProgress';
 
 export const Main = () => {
@@ -22,13 +27,22 @@ export const Main = () => {
   const handleLoadMoreClick = async () => {
     dispatch(setIsLoading(true));
 
-    const searchOptions = `&startIndex=${startIndex}`;
-    const searchResults = await getVolumesByTerms(searchValue, searchOptions);
+    try {
+      const searchOptions = `&startIndex=${startIndex}`;
+      const searchResults = await getVolumesByTerms(searchValue, searchOptions);
 
-    dispatch(setBooksArray(searchResults.items));
-    dispatch(incrementStartIndex());
-    dispatch(setIsLoading(false));
-    setPaginationDisabled(searchResults.items.length < 30);
+      dispatch(setBooksArray(searchResults.items));
+      dispatch(incrementStartIndex());
+      setPaginationDisabled(searchResults.items.length < 30);
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorObject = { title: error.name, description: error.message };
+
+        dispatch(setErrorObject(errorObject));
+      }
+    } finally {
+      dispatch(setIsLoading(false));
+    }
   };
 
   return (

@@ -1,12 +1,9 @@
 import * as React from 'react';
 import './Header.scss';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
-import { PATH } from '../../constants/paths';
-import { Link as RouterLink } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SearchIcon from '@mui/icons-material/Search';
 import { getVolumesByTerms } from '../../api/api';
@@ -21,14 +18,19 @@ import {
   setTotalItems,
 } from '../../store/actions';
 import TextField from '@mui/material/TextField';
+import { FILTERS } from '../../constants/filters';
 
 type FormInputs = {
   searchValue: string;
+  sortBy: string;
+  categories: string;
 };
 
 export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector((state) => state.isLoading);
+  const [sortBy, setSortBy] = useState('Relevance');
+  const [category, setCategory] = useState('All');
 
   const {
     register,
@@ -52,18 +54,17 @@ export const Header: React.FC = () => {
     dispatch(resetTotalItems());
     dispatch(resetBooksArray());
 
-    const searchOptions = '';
+    const categoryOption = category === 'All' ? '' : `+subject:${category}`;
+    const sortingOption = sortBy === 'Relevance' ? '' : `&orderBy=${sortBy}`;
+    const searchOptions = `${categoryOption}${sortingOption}`;
     const searchValue = encodeURIComponent(data.searchValue);
 
     try {
       const searchResults = await getVolumesByTerms(searchValue, searchOptions);
 
-      dispatch(setIsLoading(false));
-
       if (searchResults.totalItems > 0) {
         dispatch(setBooksArray(searchResults.items));
         dispatch(setTotalItems(searchResults.totalItems));
-        dispatch(setSearchValue(searchValue));
 
         return;
       }
@@ -72,8 +73,12 @@ export const Header: React.FC = () => {
     } catch (error) {
       if (error instanceof Error) {
         const errorObject = { title: error.name, description: error.message };
+
         dispatch(setErrorObject(errorObject));
       }
+    } finally {
+      dispatch(setSearchValue(searchValue));
+      dispatch(setIsLoading(false));
     }
   };
 
@@ -89,38 +94,70 @@ export const Header: React.FC = () => {
       }}
     >
       <form className="form" onSubmit={handleSubmit(onSubmit)}>
-        <div className="input-container">
-          <TextField
-            variant="outlined"
-            className="search-input"
+        <div className="search">
+          <div className="search__input-container">
+            <TextField
+              variant="outlined"
+              className="search-input"
+              sx={{
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#fff',
+                borderRadius: '4px 0 0 4px',
+                outline: 'none',
+                border: 'none',
+              }}
+              placeholder="Type here for searching…"
+              {...register('searchValue', { required: 'Nothing to search!' })}
+            />
+            {errors.searchValue && <p>Value is required!</p>}
+          </div>
+
+          <Button
+            variant="text"
             sx={{
-              width: '100%',
-              height: '100%',
-              backgroundColor: '#fff',
-              borderRadius: '4px 0 0 4px',
-              outline: 'none',
-              border: 'none',
+              width: '56px',
+              height: '56px',
+              backgroundColor: '#87A8EC',
+              borderRadius: '0 4px 4px 0',
             }}
-            placeholder="Type here for searching…"
-            {...register('searchValue', { required: 'Nothing to search!' })}
-          />
-          {errors.searchValue && <p>Value is required!</p>}
+            className="search__btn"
+            onClick={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          >
+            <SearchIcon sx={{ color: '#fff' }} />
+          </Button>
         </div>
 
-        <Button
-          variant="text"
-          sx={{
-            width: '56px',
-            height: '56px',
-            backgroundColor: '#87A8EC',
-            borderRadius: '0 4px 4px 0',
-          }}
-          className="search-btn"
-          onClick={handleSubmit(onSubmit)}
-          disabled={isLoading}
-        >
-          <SearchIcon sx={{ color: '#fff' }} />
-        </Button>
+        <div className="search__options">
+          <select
+            defaultValue="relevance"
+            className="search__sortBy"
+            {...register('sortBy')}
+            onChange={(event) => setSortBy(event.target.value as string)}
+          >
+            <option value="relevance">Relevance</option>
+            <option value="newest">Newest</option>
+          </select>
+
+          <select
+            defaultValue="All"
+            className="search__categories"
+            {...register('categories')}
+            onChange={(event) => setCategory(event.target.value as string)}
+          >
+            <option value="0" disabled>
+              Categories
+            </option>
+            <option value={FILTERS.ALL}>{FILTERS.ALL}</option>
+            <option value={FILTERS.ART}>{FILTERS.ART}</option>
+            <option value={FILTERS.BIORAPHY}>{FILTERS.BIORAPHY}</option>
+            <option value={FILTERS.COMPUTERS}>{FILTERS.COMPUTERS}</option>
+            <option value={FILTERS.HISTORY}>{FILTERS.HISTORY}</option>
+            <option value={FILTERS.MEDICAL}>{FILTERS.MEDICAL}</option>
+            <option value={FILTERS.POETRY}>{FILTERS.POETRY}</option>
+          </select>
+        </div>
       </form>
     </AppBar>
   );
