@@ -13,7 +13,7 @@ import Footer from '../Footer/Footer';
 import { ErrorObject } from '../../constants/interfaces';
 
 function App() {
-  const error: ErrorObject = useAppSelector((state) => state.error);
+  const error: ErrorObject = useAppSelector((state) => state.error) as ErrorObject;
 
   return (
     <div className="app">

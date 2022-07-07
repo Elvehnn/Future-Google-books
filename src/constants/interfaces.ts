@@ -1,15 +1,20 @@
-export interface ActionPayload {
-  isSticky?: boolean;
+// export interface ActionPayload {
+//   isSticky?: boolean;
+//   searchValue?: string;
+//   searchResult?: Book[];
+//   totalItems?: number;
+//   selectedBook?: Book | null;
+//   error?: ErrorObject;
+// }
+
+export interface Action {
+  type: string;
+  isLoading?: boolean;
   searchValue?: string;
   searchResult?: Book[];
   totalItems?: number;
   selectedBook?: Book | null;
-  error: ErrorObject;
-}
-
-export interface Action {
-  type: string;
-  payload: ActionPayload;
+  error?: ErrorObject;
 }
 
 export interface Book {

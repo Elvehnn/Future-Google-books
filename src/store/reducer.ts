@@ -15,11 +15,9 @@ import {
 } from './actions';
 
 export const books = (state: Book[] = [], action: Action): Book[] => {
-  const { payload } = action;
-
   switch (action.type) {
     case SET_BOOKS_ARRAY: {
-      return Array.isArray(payload) ? [...state, ...payload] : [...state, payload];
+      return Array.isArray(action.searchResult) ? [...state, ...action.searchResult] : state;
     }
 
     case RESET_BOOKS_ARRAY: {
@@ -32,11 +30,9 @@ export const books = (state: Book[] = [], action: Action): Book[] => {
 };
 
 export const totalItems = (state = 0, action: Action) => {
-  const { payload } = action;
-
   switch (action.type) {
     case SET_TOTAL_ITEMS: {
-      return payload;
+      return action.totalItems;
     }
 
     case RESET_TOTAL_ITEMS: {
@@ -61,11 +57,9 @@ export const startIndex = (state = 30, action: Action) => {
 };
 
 export const selectedBook = (state = null, action: Action) => {
-  const { payload } = action;
-
   switch (action.type) {
     case SET_SELECTED_BOOK: {
-      return payload;
+      return action.selectedBook;
     }
 
     default:
@@ -74,11 +68,9 @@ export const selectedBook = (state = null, action: Action) => {
 };
 
 export const searchValue = (state = '', action: Action) => {
-  const { payload } = action;
-
   switch (action.type) {
     case SET_SEARCH_VALUE: {
-      return payload;
+      return action.searchValue;
     }
 
     default:
@@ -87,11 +79,9 @@ export const searchValue = (state = '', action: Action) => {
 };
 
 export const isLoading = (state = false, action: Action) => {
-  const { payload } = action;
-
   switch (action.type) {
     case IS_LOADING: {
-      return payload;
+      return action.isLoading;
     }
 
     default:
@@ -100,11 +90,9 @@ export const isLoading = (state = false, action: Action) => {
 };
 
 export const error = (state = { title: '', description: '' }, action: Action) => {
-  const { payload } = action;
-
   switch (action.type) {
     case SET_ERROR: {
-      return payload;
+      return action.error;
     }
 
     case RESET_ERROR: {

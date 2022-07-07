@@ -21,7 +21,7 @@ export const Main = () => {
   const totalItems = useAppSelector((state) => state.totalItems);
   const startIndex = useAppSelector((state) => state.startIndex);
   const booksArray: Book[] = useAppSelector((state) => state.books);
-  const searchValue = useAppSelector((state) => state.searchValue);
+  const searchValue = useAppSelector((state) => state.searchValue) as string;
   const isLoading = useAppSelector((state) => state.isLoading);
 
   const [paginationDisabled, setPaginationDisabled] = useState(false);
@@ -75,13 +75,15 @@ export const Main = () => {
         </LoadingButton>
       ) : null}
 
-      <Fab
-        variant="circular"
-        onClick={() => window.scrollTo(0, 0)}
-        sx={{ position: 'sticky', bottom: '75px', alignSelf: 'flex-end' }}
-      >
-        <NavigationIcon />
-      </Fab>
+      {booksArray.length && booksArray.length >= 30 ? (
+        <Fab
+          variant="circular"
+          onClick={() => window.scrollTo(0, 0)}
+          sx={{ position: 'sticky', bottom: '75px', alignSelf: 'flex-end' }}
+        >
+          <NavigationIcon />
+        </Fab>
+      ) : null}
 
       {isLoading && <CircularProgress sx={{ position: 'absolute' }} />}
     </main>
