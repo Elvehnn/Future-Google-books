@@ -12,41 +12,37 @@ export const SET_ERROR = 'SET_ERROR';
 export const RESET_ERROR = 'RESET_ERROR';
 
 export const setBooksArray = (searchResult: Book[]) => {
-  return { type: SET_BOOKS_ARRAY, searchResult };
+	return { type: SET_BOOKS_ARRAY, searchResult };
 };
 
 export const resetBooksArray = () => {
-  return { type: RESET_BOOKS_ARRAY };
+	return { type: RESET_BOOKS_ARRAY };
 };
 
 export const setTotalItems = (totalItems: number) => {
-  return { type: SET_TOTAL_ITEMS, totalItems };
+	return { type: SET_TOTAL_ITEMS, totalItems };
 };
 
 export const resetTotalItems = () => {
-  return { type: RESET_TOTAL_ITEMS };
-};
-
-export const setSelectedBook = (book: Book) => {
-  return { type: SET_SELECTED_BOOK, book };
+	return { type: RESET_TOTAL_ITEMS };
 };
 
 export const setSearchValue = (searchValue: string) => {
-  return { type: SET_SEARCH_VALUE, searchValue };
+	return { type: SET_SEARCH_VALUE, searchValue };
 };
 
 export const incrementStartIndex = () => {
-  return { type: INCREMENT_START_INDEX };
+	return { type: INCREMENT_START_INDEX };
 };
 
 export const setIsLoading = (isLoading: boolean) => {
-  return { type: IS_LOADING, isLoading };
+	return { type: IS_LOADING, isLoading };
 };
 
 export const setErrorObject = (error: ErrorObject) => {
-  return { type: SET_ERROR, error };
+	return { type: SET_ERROR, error };
 };
 
 export const resetErrorObject = () => {
-  return { type: RESET_ERROR };
+	return { type: RESET_ERROR };
 };
