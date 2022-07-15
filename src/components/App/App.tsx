@@ -16,7 +16,7 @@ function App() {
   const error: ErrorObject = useAppSelector((state) => state.error) as ErrorObject;
 
   return (
-    <div className="app">
+    <div className="app" data-testid="app">
       <ThemeProvider theme={theme}>
         <Header />
         <Router>

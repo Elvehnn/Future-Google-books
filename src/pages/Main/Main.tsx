@@ -50,7 +50,13 @@ export const Main = () => {
   return (
     <main className="main">
       {totalItems ? (
-        <Typography variant="h4" align="center" color="text.secondary" sx={{ p: '15px' }}>
+        <Typography
+          variant="h4"
+          align="center"
+          color="text.secondary"
+          sx={{ p: '15px' }}
+          data-testid="main-title"
+        >
           Found {totalItems} items
         </Typography>
       ) : null}
@@ -70,6 +76,7 @@ export const Main = () => {
           loading={isLoading}
           variant="contained"
           disabled={paginationDisabled}
+          data-testid="load-more"
         >
           Load more
         </LoadingButton>

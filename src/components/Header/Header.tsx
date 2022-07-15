@@ -85,17 +85,21 @@ export const Header: React.FC = () => {
   return (
     <AppBar
       className="header"
+      data-testid="header"
       sx={{
         flexGrow: 1,
         position: 'fixed',
         background: `url('./ZoCtEVBYKzo.jpg') no-repeat top center / cover`,
       }}
     >
-      <h1 className="header__title">Book search</h1>
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+      <h1 className="header__title" data-testid="header-title">
+        Book search
+      </h1>
+      <form className="form" data-testid="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="search">
           <div className="search__input-container">
             <TextField
+              data-testid="search-input"
               variant="outlined"
               className="search-input"
               sx={{
@@ -118,6 +122,7 @@ export const Header: React.FC = () => {
                 borderRadius: '0 4px 4px 0',
               }}
               className="search__btn"
+              data-testid="search-btn"
               onClick={handleSubmit(onSubmit)}
               disabled={isLoading}
             >
@@ -132,6 +137,7 @@ export const Header: React.FC = () => {
           <select
             defaultValue="relevance"
             className="search__sortBy"
+            data-testid="search-sortBy"
             {...register('sortBy')}
             onChange={(event) => setSortBy(event.target.value as string)}
           >
@@ -142,6 +148,7 @@ export const Header: React.FC = () => {
           <select
             defaultValue="All"
             className="search__categories"
+            data-testid="search-categories"
             {...register('categories')}
             onChange={(event) => setCategory(event.target.value as string)}
           >

@@ -25,15 +25,15 @@ export const BookPage = () => {
   return (
     <div className="main">
       {bookToShow && (
-        <div className="book-page">
-          <div className="book-page__image-container">
+        <div className="book-page" data-testid="book-page">
+          <div className="book-page__image-container" data-testid="book-page-image-container">
             <img
               src={`${bookToShow.volumeInfo.imageLinks.thumbnail}`}
               alt="book-cover"
               className="image"
             />
           </div>
-          <div className="book-page__info">
+          <div className="book-page__info" data-testid="book-page-info">
             <Typography className="book-page__categories" variant="h5">
               {bookToShow.volumeInfo.categories?.join(' / ')}
             </Typography>
