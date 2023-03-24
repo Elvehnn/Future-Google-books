@@ -23,7 +23,7 @@ function App() {
           <Routes>
             <Route
               path={PATH.BASE_URL}
-              element={error.title ? <ErrorPage {...error} /> : <Main />}
+              element={error.title || error.description ? <ErrorPage {...error} /> : <Main />}
             />
             <Route path={PATH.NOT_FOUND} element={<h3>Not Found</h3>} />
             <Route path={PATH.BOOK} element={<BookPage />} />

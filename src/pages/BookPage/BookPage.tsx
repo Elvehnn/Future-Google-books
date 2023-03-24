@@ -1,23 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { CircularProgress, Typography } from '@mui/material';
 import './BookPage.scss';
 import { Book } from '../../constants/interfaces';
-import { PATH } from '../../constants/paths';
-import { API_KEY } from '../../constants/constants';
 import { getVolumeById } from '../../api/api';
 
 export const BookPage = () => {
-  const navigate = useNavigate();
   const params = useParams<{ id: string }>().id || '';
-  const [bookToShow, setBookToShow] = useState<Book | null>(null);
+  const [bookToShow, setBookToShow] = useState<Nullable<Book>>(null);
 
   useEffect(() => {
-    getVolumeById(params, API_KEY).then((response) => {
-      if (response) {
-        setBookToShow(response);
+    getVolumeById(params).then((response) => {
+      if (response && response.status === 200) {
+        setBookToShow(response.data);
       }
     });
   }, [params]);
@@ -57,7 +54,7 @@ export const BookPage = () => {
                 opacity: 0.9,
                 mt: '20px',
               }}
-              onClick={() => navigate(PATH.BASE_URL)}
+              onClick={() => history.back()}
             >
               <KeyboardBackspaceIcon sx={{ fontSize: '35px' }} />
             </Button>

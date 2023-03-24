@@ -1,4 +1,4 @@
-import { Book } from '@/constants/interfaces';
+import { Book } from '../constants/interfaces';
 
 export type ResponseStatus = {
   ok?: string;
@@ -13,4 +13,9 @@ export type APIError = {
 export type BooksResponse = {
   items: Book[];
   totalItems: number;
+};
+
+export type ApiResponse = {
+  status: number;
+  data: BooksResponse;
 };

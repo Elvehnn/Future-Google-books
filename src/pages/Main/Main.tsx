@@ -3,28 +3,24 @@ import Typography from '@mui/material/Typography';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { BookPreview } from '../../components/BookPreview/BookPreview';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useState } from 'react';
-
+import { memo, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
-import { getVolumesByTerms } from '../../services/search';
 import { totalItemsSelectors } from '../../store/slices/totalItems/totalItemsSlice';
-import {
-  startIndexActions,
-  startIndexSelectors,
-} from '../../store/slices/startIndexSlice/startIndexSlice';
 import { booksActions, booksSelectors } from '../../store/slices/books/booksSlice';
-import { searchValueSelectors } from '../../store/slices/searchValue/searchValueSlice';
+import {
+  searchParamsActions,
+  searchParamsSelectors,
+} from '../../store/slices/searchParams/searchParamsSlice';
 import { isLoadingActions, isLoadingSelectors } from '../../store/slices/isLoading/isLoadingSlice';
-import { errorActions } from '../../store/slices/error/errorSlice';
+import { ITEMS_PER_PAGE } from '../../constants/constants';
 
-export const Main = () => {
+const Main = () => {
   const dispatch = useAppDispatch();
   const { totalItems } = useAppSelector(totalItemsSelectors.all);
-  const { startIndex } = useAppSelector(startIndexSelectors.all);
   const { booksArray } = useAppSelector(booksSelectors.all);
-  const { searchValue } = useAppSelector(searchValueSelectors.all);
+  const { searchParams } = useAppSelector(searchParamsSelectors.all);
   const { isLoading } = useAppSelector(isLoadingSelectors.all);
 
   const [paginationDisabled, setPaginationDisabled] = useState(false);
@@ -32,24 +28,13 @@ export const Main = () => {
   const handleLoadMoreClick = async () => {
     dispatch(isLoadingActions.setIsLoading(true));
 
-    try {
-      const searchOptions = `&startIndex=${startIndex}`;
-      const searchResults = await getVolumesByTerms(searchValue, searchOptions);
+    const { searchValue, category, sortBy, startIndex } = searchParams;
 
-      if (searchResults) {
-        dispatch(booksActions.setBooksArray(searchResults.items));
-        dispatch(startIndexActions.incrementStartIndex());
-        setPaginationDisabled(searchResults.items.length < 30);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        const errorObject = { title: error.name, description: error.message };
+    dispatch(booksActions.getBooksArray({ searchValue, category, sortBy, startIndex }));
+    dispatch(searchParamsActions.incrementStartIndex());
 
-        dispatch(errorActions.setError(errorObject));
-      }
-    } finally {
-      dispatch(isLoadingActions.setIsLoading(false));
-    }
+    const isBooksArrayFull = booksArray.length !== 0 && startIndex + +ITEMS_PER_PAGE >= totalItems;
+    setPaginationDisabled(isBooksArrayFull);
   };
 
   return (
@@ -66,7 +51,7 @@ export const Main = () => {
         </Typography>
       ) : null}
 
-      <div className="cards-container">
+      <div className="cards-container" style={{ transition: 'ease 0.5s' }}>
         {booksArray.length
           ? booksArray.map((book) => {
               return <BookPreview key={book.id} {...book} />;
@@ -102,4 +87,6 @@ export const Main = () => {
   );
 };
 
-export default Main;
+const memoMain = memo(Main);
+
+export default memoMain;

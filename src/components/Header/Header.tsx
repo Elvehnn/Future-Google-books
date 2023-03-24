@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import { FILTERS } from '../../constants/filters';
-import { getVolumesByTerms } from '../../services/search';
 import { isFieldEmpty } from '../../services/validators';
 import { generateErrorObject } from '../../utils/generateErrorObject';
 import { SORT_TYPES } from '../../constants/sortTypes';
@@ -16,7 +15,7 @@ import { isLoadingActions, isLoadingSelectors } from '../../store/slices/isLoadi
 import { errorActions } from '../../store/slices/error/errorSlice';
 import { totalItemsActions } from '../../store/slices/totalItems/totalItemsSlice';
 import { booksActions } from '../../store/slices/books/booksSlice';
-import { searchValueActions } from '../../store/slices/searchValue/searchValueSlice';
+import { searchParamsActions } from '../../store/slices/searchParams/searchParamsSlice';
 
 type FormInputs = {
   searchValue: string;
@@ -39,8 +38,8 @@ export const Header: React.FC = () => {
   const onSubmit = async (data: FormInputs) => {
     if (isFieldEmpty(data.searchValue)) {
       const error = generateErrorObject('Пустой поисковый запрос', '');
-
       dispatch(errorActions.setError(error));
+
       return;
     }
 
@@ -51,32 +50,10 @@ export const Header: React.FC = () => {
 
     const searchValue = encodeURIComponent(data.searchValue);
 
-    try {
-      const searchResults = await getVolumesByTerms(searchValue, category, sortBy);
-
-      if (searchResults && searchResults.totalItems > 0) {
-        dispatch(booksActions.setBooksArray(searchResults.items));
-        dispatch(totalItemsActions.setTotalItems(searchResults.totalItems));
-
-        return;
-      }
-
-      const errorObject = {
-        title: 'Ничего не найдено.',
-        description: 'Попробуйте изменить запрос.',
-      };
-
-      dispatch(errorActions.setError(errorObject));
-    } catch (error) {
-      if (error instanceof Error) {
-        const errorObject = { title: error.name, description: error.message };
-
-        dispatch(errorActions.setError(errorObject));
-      }
-    } finally {
-      dispatch(searchValueActions.setSearchValue(searchValue));
-      dispatch(isLoadingActions.setIsLoading(false));
-    }
+    dispatch(booksActions.getBooksArray({ searchValue, category, sortBy }));
+    dispatch(
+      searchParamsActions.setSearchParams({ searchValue, category, sortBy, startIndex: 30 })
+    );
   };
 
   return (
