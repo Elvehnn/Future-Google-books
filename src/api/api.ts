@@ -12,6 +12,7 @@ axios.interceptors.response.use(
   },
   function (error) {
     const dispatch = useAppDispatch();
+
     if (error.response.data.statusCode >= 400) {
       const errorObject = { title: error.name, description: error.message };
 

@@ -1,0 +1,5 @@
+docker
+.git
+dist
+build
+node_modules
