@@ -1,49 +1,54 @@
 import './Main.scss';
 import Typography from '@mui/material/Typography';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { Book } from '../../constants/interfaces';
 import { BookPreview } from '../../components/BookPreview/BookPreview';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useState } from 'react';
-import { getVolumesByTerms } from '../../api/api';
-import {
-  incrementStartIndex,
-  setBooksArray,
-  setErrorObject,
-  setIsLoading,
-} from '../../store/actions';
+
 import CircularProgress from '@mui/material/CircularProgress';
 import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
+import { getVolumesByTerms } from '../../services/search';
+import { totalItemsSelectors } from '../../store/slices/totalItems/totalItemsSlice';
+import {
+  startIndexActions,
+  startIndexSelectors,
+} from '../../store/slices/startIndexSlice/startIndexSlice';
+import { booksActions, booksSelectors } from '../../store/slices/books/booksSlice';
+import { searchValueSelectors } from '../../store/slices/searchValue/searchValueSlice';
+import { isLoadingActions, isLoadingSelectors } from '../../store/slices/isLoading/isLoadingSlice';
+import { errorActions } from '../../store/slices/error/errorSlice';
 
 export const Main = () => {
   const dispatch = useAppDispatch();
-  const totalItems = useAppSelector((state) => state.totalItems);
-  const startIndex = useAppSelector((state) => state.startIndex);
-  const booksArray: Book[] = useAppSelector((state) => state.books);
-  const searchValue = useAppSelector((state) => state.searchValue) as string;
-  const isLoading = useAppSelector((state) => state.isLoading);
+  const { totalItems } = useAppSelector(totalItemsSelectors.all);
+  const { startIndex } = useAppSelector(startIndexSelectors.all);
+  const { booksArray } = useAppSelector(booksSelectors.all);
+  const { searchValue } = useAppSelector(searchValueSelectors.all);
+  const { isLoading } = useAppSelector(isLoadingSelectors.all);
 
   const [paginationDisabled, setPaginationDisabled] = useState(false);
 
   const handleLoadMoreClick = async () => {
-    dispatch(setIsLoading(true));
+    dispatch(isLoadingActions.setIsLoading(true));
 
     try {
       const searchOptions = `&startIndex=${startIndex}`;
       const searchResults = await getVolumesByTerms(searchValue, searchOptions);
 
-      dispatch(setBooksArray(searchResults.items));
-      dispatch(incrementStartIndex());
-      setPaginationDisabled(searchResults.items.length < 30);
+      if (searchResults) {
+        dispatch(booksActions.setBooksArray(searchResults.items));
+        dispatch(startIndexActions.incrementStartIndex());
+        setPaginationDisabled(searchResults.items.length < 30);
+      }
     } catch (error) {
       if (error instanceof Error) {
         const errorObject = { title: error.name, description: error.message };
 
-        dispatch(setErrorObject(errorObject));
+        dispatch(errorActions.setError(errorObject));
       }
     } finally {
-      dispatch(setIsLoading(false));
+      dispatch(isLoadingActions.setIsLoading(false));
     }
   };
 

@@ -1,5 +1,5 @@
 export const FILTERS = {
-  ALL: 'All',
+  DEFAULT: 'All',
   ART: `Art`,
   BIORAPHY: 'Biography',
   COMPUTERS: 'Computers',

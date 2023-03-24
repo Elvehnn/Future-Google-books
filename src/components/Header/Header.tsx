@@ -6,19 +6,17 @@ import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import SearchIcon from '@mui/icons-material/Search';
-import { getVolumesByTerms } from '../../api/api';
-import {
-  resetBooksArray,
-  resetErrorObject,
-  resetTotalItems,
-  setBooksArray,
-  setErrorObject,
-  setIsLoading,
-  setSearchValue,
-  setTotalItems,
-} from '../../store/actions';
 import TextField from '@mui/material/TextField';
 import { FILTERS } from '../../constants/filters';
+import { getVolumesByTerms } from '../../services/search';
+import { isFieldEmpty } from '../../services/validators';
+import { generateErrorObject } from '../../utils/generateErrorObject';
+import { SORT_TYPES } from '../../constants/sortTypes';
+import { isLoadingActions, isLoadingSelectors } from '../../store/slices/isLoading/isLoadingSlice';
+import { errorActions } from '../../store/slices/error/errorSlice';
+import { totalItemsActions } from '../../store/slices/totalItems/totalItemsSlice';
+import { booksActions } from '../../store/slices/books/booksSlice';
+import { searchValueActions } from '../../store/slices/searchValue/searchValueSlice';
 
 type FormInputs = {
   searchValue: string;
@@ -28,7 +26,7 @@ type FormInputs = {
 
 export const Header: React.FC = () => {
   const dispatch = useAppDispatch();
-  const isLoading = useAppSelector((state) => state.isLoading);
+  const { isLoading } = useAppSelector(isLoadingSelectors.all);
   const [sortBy, setSortBy] = useState('Relevance');
   const [category, setCategory] = useState('All');
 
@@ -39,46 +37,45 @@ export const Header: React.FC = () => {
   } = useForm<FormInputs>();
 
   const onSubmit = async (data: FormInputs) => {
-    if (/^\s*$/.test(data.searchValue)) {
-      const error = {
-        title: 'Пустой поисковый запрос',
-        description: '',
-      };
+    if (isFieldEmpty(data.searchValue)) {
+      const error = generateErrorObject('Пустой поисковый запрос', '');
 
-      dispatch(setErrorObject(error));
+      dispatch(errorActions.setError(error));
       return;
     }
 
-    dispatch(resetErrorObject());
-    dispatch(setIsLoading(true));
-    dispatch(resetTotalItems());
-    dispatch(resetBooksArray());
+    dispatch(isLoadingActions.setIsLoading(true));
+    dispatch(errorActions.resetError());
+    dispatch(totalItemsActions.setTotalItems(0));
+    dispatch(booksActions.resetBooksArray());
 
-    const categoryOption = category === 'All' ? '' : `+subject:${category}`;
-    const sortingOption = sortBy === 'Relevance' ? '' : `&orderBy=${sortBy}`;
-    const searchOptions = `${categoryOption}${sortingOption}`;
     const searchValue = encodeURIComponent(data.searchValue);
 
     try {
-      const searchResults = await getVolumesByTerms(searchValue, searchOptions);
+      const searchResults = await getVolumesByTerms(searchValue, category, sortBy);
 
-      if (searchResults.totalItems > 0) {
-        dispatch(setBooksArray(searchResults.items));
-        dispatch(setTotalItems(searchResults.totalItems));
+      if (searchResults && searchResults.totalItems > 0) {
+        dispatch(booksActions.setBooksArray(searchResults.items));
+        dispatch(totalItemsActions.setTotalItems(searchResults.totalItems));
 
         return;
       }
 
-      throw new Error('Ничего не найдено');
+      const errorObject = {
+        title: 'Ничего не найдено.',
+        description: 'Попробуйте изменить запрос.',
+      };
+
+      dispatch(errorActions.setError(errorObject));
     } catch (error) {
       if (error instanceof Error) {
         const errorObject = { title: error.name, description: error.message };
 
-        dispatch(setErrorObject(errorObject));
+        dispatch(errorActions.setError(errorObject));
       }
     } finally {
-      dispatch(setSearchValue(searchValue));
-      dispatch(setIsLoading(false));
+      dispatch(searchValueActions.setSearchValue(searchValue));
+      dispatch(isLoadingActions.setIsLoading(false));
     }
   };
 
@@ -95,6 +92,7 @@ export const Header: React.FC = () => {
       <h1 className="header__title" data-testid="header-title">
         Book search
       </h1>
+
       <form className="form" data-testid="form" onSubmit={handleSubmit(onSubmit)}>
         <div className="search">
           <div className="search__input-container">
@@ -141,8 +139,8 @@ export const Header: React.FC = () => {
             {...register('sortBy')}
             onChange={(event) => setSortBy(event.target.value as string)}
           >
-            <option value="relevance">Relevance</option>
-            <option value="newest">Newest</option>
+            <option value={SORT_TYPES.DEFAULT}>{SORT_TYPES.DEFAULT}</option>
+            <option value={SORT_TYPES.NEWEST}>{SORT_TYPES.NEWEST}</option>
           </select>
 
           <select
@@ -155,7 +153,7 @@ export const Header: React.FC = () => {
             <option value="0" disabled>
               Categories
             </option>
-            <option value={FILTERS.ALL}>{FILTERS.ALL}</option>
+            <option value={FILTERS.DEFAULT}>{FILTERS.DEFAULT}</option>
             <option value={FILTERS.ART}>{FILTERS.ART}</option>
             <option value={FILTERS.BIORAPHY}>{FILTERS.BIORAPHY}</option>
             <option value={FILTERS.COMPUTERS}>{FILTERS.COMPUTERS}</option>

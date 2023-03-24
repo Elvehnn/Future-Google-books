@@ -1,7 +1,9 @@
 import { Book } from './interfaces';
 
-export const API_KEY = 'AIzaSyAwmoNcoRmL5Ziiy43ZGrNtQripDMEgIE8';
+export const API_KEY = process.env.API_KEY || 'AIzaSyAwmoNcoRmL5Ziiy43ZGrNtQripDMEgIE8';
+
 export const ITEMS_PER_PAGE = '30';
+
 export const INITIAL_STATE = {
   searchValue: '',
   searchResult: [] as Book[],

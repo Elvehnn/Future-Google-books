@@ -10,10 +10,10 @@ import { useAppSelector } from '../../store/hooks';
 import { BookPage } from '../../pages/BookPage/BookPage';
 import { Header } from '../Header/Header';
 import Footer from '../Footer/Footer';
-import { ErrorObject } from '../../constants/interfaces';
+import { errorSelectors } from '../../store/slices/error/errorSlice';
 
 function App() {
-  const error: ErrorObject = useAppSelector((state) => state.error) as ErrorObject;
+  const { error } = useAppSelector(errorSelectors.all);
 
   return (
     <div className="app" data-testid="app">

@@ -27,7 +27,7 @@ export interface Book {
     description: string;
   };
 }
-export interface ErrorObject {
+export type ErrorObject = {
   title: string;
   description: string;
-}
+};
