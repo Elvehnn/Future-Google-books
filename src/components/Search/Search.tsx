@@ -48,6 +48,7 @@ export const Search = (style: SearchPanelStyle) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormInputs>();
 
   const handleTitleClick = () => {
@@ -80,6 +81,12 @@ export const Search = (style: SearchPanelStyle) => {
     dispatch(searchParamsActions.setSearchParams({ ...newSearchParams, startIndex: 30 }));
     localStorage.setItem('lastSearch', JSON.stringify({ ...newSearchParams, startIndex: 0 }));
     navigate(PATH.SEARCH_RESULTS);
+  };
+
+  const handleReset = () => {
+    dispatch(searchParamsActions.resetSearchParams());
+    localStorage.removeItem('lastSearch');
+    reset({ newSearchValue: '', newSortBy: SORT_TYPES.DEFAULT, newCategory: FILTERS.DEFAULT });
   };
 
   return (
@@ -153,6 +160,15 @@ export const Search = (style: SearchPanelStyle) => {
             <option value={FILTERS.MEDICAL}>{FILTERS.MEDICAL}</option>
             <option value={FILTERS.POETRY}>{FILTERS.POETRY}</option>
           </select>
+          <Button
+            variant="outlined"
+            className="search__reset-btn"
+            data-testid="search-reset-btn"
+            onClick={handleReset}
+            disabled={isLoading}
+          >
+            Reset
+          </Button>
         </div>
       </form>
     </AppBar>
