@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { BookPreview } from '../BookPreview/BookPreview';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { memo, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fab from '@mui/material/Fab';
 import NavigationIcon from '@mui/icons-material/Navigation';
@@ -17,9 +17,11 @@ import { isLoadingActions, isLoadingSelectors } from '../../store/slices/isLoadi
 import { ITEMS_PER_PAGE } from '../../constants/constants';
 import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
 import { errorSelectors } from '../../store/slices/error/errorSlice';
+import { CSSTransition } from 'react-transition-group';
 
 const SearchResults = () => {
   const dispatch = useAppDispatch();
+  const nodeRef = useRef(null);
   const { totalItems } = useAppSelector(totalItemsSelectors.all);
   const { booksArray } = useAppSelector(booksSelectors.all);
   const { searchParams } = useAppSelector(searchParamsSelectors.all);
@@ -54,15 +56,31 @@ const SearchResults = () => {
         </Typography>
       ) : null}
 
-      <div className="cards-container" style={{ transition: 'ease 0.5s' }}>
-        {booksArray.length ? (
-          booksArray.map((book) => {
+      <CSSTransition
+        in={Boolean(booksArray.length)}
+        nodeRef={nodeRef}
+        timeout={300}
+        classNames="opacity"
+        unmountOnExit
+      >
+        <div className="cards-container" ref={nodeRef}>
+          {booksArray.map((book) => {
             return <BookPreview key={book.id} {...book} />;
-          })
-        ) : (
+          })}
+        </div>
+      </CSSTransition>
+
+      <CSSTransition
+        in={Boolean(!booksArray.length)}
+        nodeRef={nodeRef}
+        timeout={300}
+        classNames="opacity"
+        unmountOnExit
+      >
+        <div className="cards-container" ref={nodeRef}>
           <ErrorPage {...error} />
-        )}
-      </div>
+        </div>
+      </CSSTransition>
 
       {booksArray.length && booksArray.length >= 30 ? (
         <LoadingButton

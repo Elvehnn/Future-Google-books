@@ -1,7 +1,8 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useRef } from 'react';
 import Footer from '../Footer/Footer';
 import { Search, SearchPanelStyle } from '../Search/Search';
 import './MainLayout.scss';
+import { CSSTransition } from 'react-transition-group';
 
 type MainLayoutProps = {
   children?: ReactElement;
@@ -14,12 +15,16 @@ const MainLayout: FC<MainLayoutProps> = ({ children, searchStyle, background }) 
     ? { background: `url('./ZoCtEVBYKzo.jpg') no-repeat top center / cover` }
     : { backgroundColor: '#FFF' };
 
+  const nodeRef = useRef(null);
+
   return (
-    <main className="main" style={mainBackground}>
-      <Search {...searchStyle} />
-      {children}
-      <Footer />
-    </main>
+    <CSSTransition in={true} nodeRef={nodeRef} timeout={300} classNames="opacity" unmountOnExit>
+      <main className="main" style={mainBackground} ref={nodeRef}>
+        <Search {...searchStyle} />
+        {children}
+        <Footer />
+      </main>
+    </CSSTransition>
   );
 };
 

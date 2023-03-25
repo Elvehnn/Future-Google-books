@@ -20,3 +20,11 @@ body {
 #root {
   height: 100%;
 }
+
+.opacity-enter {
+  opacity: 0;
+}
+.opacity-enter-active {
+  opacity: 1;
+  transition: opacity 300ms, transform 300ms;
+}

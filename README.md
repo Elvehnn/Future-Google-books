@@ -3,7 +3,7 @@
 Разработать React-приложение поиска книг с помощью Google Books API. Документация: https://developers.google.com/books/docs/v1/using.
 Для авторизации запросов к API выбрать способ с предоставлением API key (https://developers.google.com/books/docs/v1/using#APIKey).
 
-### [Деплой](https://google-books-searching.netlify.app/)
+### [Деплой](https://google-books-search-v2.netlify.app/)
 
 ## Функционал
 
@@ -22,10 +22,12 @@
 
 ## Реализация
 
-- Использование React, Redux и Typescript
+- Использование React, Redux, Redux Saga, Typescript, Axios, React Testing Library
 - Во время запросов показываются лоадеры и дизейблятся кнопки
 - Ошибки обрабатываются и выводятся в удобном формате
-- При верстке использованы компоненты MUI
+- При верстке использованы компоненты MUI и препроцессор Sass
+- Unit-тесты на некоторые компоненты
+- Возможен запуск в docker-контейнере (см. инструкцию ниже)
 
 ## Скрипты
 
