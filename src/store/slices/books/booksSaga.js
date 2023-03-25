@@ -9,6 +9,8 @@ import { bookDetailsActions } from '../bookDetails/bookDetailsSlice';
 import { getVolumesByTermsRequest, getVolumeById } from '../../../api/api';
 
 export function* workBookDetails({ payload }) {
+  yield put(isLoadingActions.setIsLoading(true));
+
   try {
     const response = yield call(getVolumeById, payload);
 
@@ -22,6 +24,8 @@ export function* workBookDetails({ payload }) {
         description: 'Попробуйте еще раз.',
       })
     );
+  } finally {
+    yield put(isLoadingActions.setIsLoading(false));
   }
 }
 

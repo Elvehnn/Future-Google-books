@@ -1,6 +1,5 @@
 import './Search.scss';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -21,9 +20,9 @@ import { useNavigate } from 'react-router-dom';
 import { PATH } from '../../constants/paths';
 
 export type FormInputs = {
-  searchValue: string;
-  sortBy: string;
-  category: string;
+  newSearchValue: string;
+  newSortBy: string;
+  newCategory: string;
 };
 
 export type SearchPanelStyle = {
@@ -43,11 +42,7 @@ export const Search = (style: SearchPanelStyle) => {
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(isLoadingSelectors.all);
   const { searchParams } = useAppSelector(searchParamsSelectors.all);
-
-  const { category, sortBy } = searchParams;
-
-  const [sortByValue, setSortBy] = useState(sortBy);
-  const [categoryValue, setCategory] = useState(category);
+  const { searchValue, category, sortBy } = searchParams;
 
   const {
     register,
@@ -55,8 +50,16 @@ export const Search = (style: SearchPanelStyle) => {
     formState: { errors },
   } = useForm<FormInputs>();
 
+  const handleTitleClick = () => {
+    dispatch(totalItemsActions.setTotalItems(0));
+    dispatch(booksActions.resetBooksArray());
+    dispatch(searchParamsActions.resetSearchParams());
+    localStorage.removeItem('lastSearch');
+    navigate(PATH.BASE_URL);
+  };
+
   const onSubmit = async (data: FormInputs) => {
-    if (isFieldEmpty(data.searchValue)) {
+    if (isFieldEmpty(data.newSearchValue)) {
       dispatch(errorActions.setError({ title: 'Пустой поисковый запрос', description: '' }));
 
       return;
@@ -66,24 +69,22 @@ export const Search = (style: SearchPanelStyle) => {
     dispatch(errorActions.resetError());
     dispatch(totalItemsActions.setTotalItems(0));
     dispatch(booksActions.resetBooksArray());
-    console.log(data);
 
-    const searchValue = encodeURIComponent(data.searchValue);
+    const newSearchParams = {
+      searchValue: data.newSearchValue,
+      category: data.newCategory,
+      sortBy: data.newSortBy,
+    };
 
-    dispatch(booksActions.getBooksArray({ searchValue, category, sortBy }));
-    dispatch(
-      searchParamsActions.setSearchParams({ searchValue, category, sortBy, startIndex: 30 })
-    );
-    localStorage.setItem(
-      'lastSearch',
-      JSON.stringify({ searchValue, category, sortBy, startIndex: 0 })
-    );
+    dispatch(booksActions.getBooksArray(newSearchParams));
+    dispatch(searchParamsActions.setSearchParams({ ...newSearchParams, startIndex: 30 }));
+    localStorage.setItem('lastSearch', JSON.stringify({ ...newSearchParams, startIndex: 0 }));
     navigate(PATH.SEARCH_RESULTS);
   };
 
   return (
     <AppBar className="header" data-testid="header" sx={style}>
-      <h1 className="header__title" data-testid="header-title">
+      <h1 className="header__title" data-testid="header-title" onClick={handleTitleClick}>
         Book search
       </h1>
 
@@ -94,16 +95,14 @@ export const Search = (style: SearchPanelStyle) => {
               data-testid="search-input"
               variant="outlined"
               className="search-input"
-              defaultValue="Hello World"
+              defaultValue={searchValue}
               sx={{
                 height: '100%',
                 backgroundColor: '#fff',
-                borderRadius: '4px 0 0 4px',
-                outline: 'none',
-                border: 'none',
+                borderRadius: '6px 0 0 6px',
               }}
               placeholder="Type here for searching…"
-              {...register('searchValue', { required: 'Nothing to search!' })}
+              {...register('newSearchValue', { required: 'Nothing to search!' })}
             />
             <Button
               variant="text"
@@ -123,27 +122,25 @@ export const Search = (style: SearchPanelStyle) => {
             </Button>
           </div>
 
-          {errors.searchValue && <p>Value is required!</p>}
+          {errors.newSearchValue && <p>Value is required!</p>}
         </div>
 
         <div className="search__options">
           <select
-            defaultValue={sortByValue}
+            defaultValue={sortBy}
             className="search__sortBy"
             data-testid="search-sortBy"
-            {...register('sortBy')}
-            onChange={(event) => setSortBy(event.target.value as string)}
+            {...register('newSortBy')}
           >
             <option value={SORT_TYPES.DEFAULT}>{SORT_TYPES.DEFAULT}</option>
             <option value={SORT_TYPES.NEWEST}>{SORT_TYPES.NEWEST}</option>
           </select>
 
           <select
-            defaultValue={categoryValue}
+            defaultValue={category}
             className="search__categories"
             data-testid="search-categories"
-            {...register('category')}
-            onChange={(event) => setCategory(event.target.value as string)}
+            {...register('newCategory')}
           >
             <option value="0" disabled>
               Categories

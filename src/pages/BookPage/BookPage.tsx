@@ -9,11 +9,13 @@ import {
   bookDetailsSelectors,
 } from '../../store/slices/bookDetails/bookDetailsSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { isLoadingSelectors } from '../../store/slices/isLoading/isLoadingSlice';
 
 const BookPage = () => {
   const dispatch = useAppDispatch();
   const params = useParams<{ id: string }>().id || '';
   const { bookDetails } = useAppSelector(bookDetailsSelectors.all);
+  const { isLoading } = useAppSelector(isLoadingSelectors.all);
 
   useEffect(() => {
     dispatch(bookDetailsActions.getBookDetails(params));
@@ -21,7 +23,7 @@ const BookPage = () => {
 
   return (
     <>
-      {bookDetails.id && (
+      {bookDetails.id === params && (
         <div className="book-page" data-testid="book-page">
           <div className="book-page__image-container" data-testid="book-page-image-container">
             <img
@@ -62,7 +64,7 @@ const BookPage = () => {
         </div>
       )}
 
-      {!bookDetails.id && <CircularProgress sx={{ position: 'absolute' }} />}
+      {isLoading && <CircularProgress sx={{ position: 'absolute' }} />}
     </>
   );
 };

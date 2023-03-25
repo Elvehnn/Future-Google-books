@@ -3,11 +3,15 @@ import Card from '@mui/material/Card';
 import './BookPreview.scss';
 import { Book } from '../../constants/interfaces';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../store/hooks';
+import { bookDetailsActions } from '../../store/slices/bookDetails/bookDetailsSlice';
 
 export const BookPreview = (props: Book) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleBookPreviewClick = async (book: Book) => {
+    dispatch(bookDetailsActions.getBookDetails(book.id));
     navigate(`book/${book.id}`);
   };
 
