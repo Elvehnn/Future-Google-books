@@ -1,42 +1,11 @@
 version: '3.9'
 
 services:
-  client:
-    container_name: google-books-client
-    image: google-books-client
-    build:
-      context: .
-      dockerfile: ./docker/client/Dockerfile
-    restart: always
-    expose:
-      - 3000
-    ports:
-      - '${CLIENT_PORT}:3000'
-    networks:
-      - google-books-network
-    environment:
-      CLIENT_PORT: ${CLIENT_PORT}
-    stdin_open: true
-    volumes:
-      - /app/node_modules
-      - /app
-
-  nginx:
-    container_name: google-books-nginx
-    image: google-books-nginx
-    restart: always
-    depends_on:
-      - client
+  nginx-react:
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
     ports:
-      - '80:80'
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    networks:
-      - google-books-network
-
-networks:
-  google-books-network:
-    driver: bridge
+      - '${CLIENT_PORT}:80'
+    environment:
+      CLIENT_PORT: ${CLIENT_PORT}
