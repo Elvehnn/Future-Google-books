@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { Header } from './Header';
+import { Search } from './Search';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from '../../store/store';
@@ -10,7 +10,7 @@ describe('Header', () => {
       <Provider store={store}>
         <BrowserRouter>
           render(
-          <Header />
+          <Search />
           );
         </BrowserRouter>
         ;

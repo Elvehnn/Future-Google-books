@@ -6,6 +6,7 @@ import { searchParamsReducer } from './slices/searchParams/searchParamsSlice';
 import { totalItemsReducer } from './slices/totalItems/totalItemsSlice';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './rootSaga';
+import { bookDetailsReducer } from './slices/bookDetails/bookDetailsSlice';
 
 const saga = createSagaMiddleware();
 
@@ -17,6 +18,7 @@ export const createStore = (preloadedState: Record<string, unknown>) => {
       searchParams: searchParamsReducer,
       isLoading: isLoadingReducer,
       error: errorReducer,
+      bookDetails: bookDetailsReducer,
     },
     middleware: [saga],
     preloadedState,

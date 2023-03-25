@@ -1,5 +1,3 @@
-/* eslint-disable require-yield */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FILTERS } from '../../../constants/filters';
 import { SORT_TYPES } from '../../../constants/sortTypes';
 import { call, put, takeEvery } from 'redux-saga/effects';
@@ -7,8 +5,25 @@ import { booksActions } from './booksSlice';
 import { totalItemsActions } from '../totalItems/totalItemsSlice';
 import { errorActions } from '../error/errorSlice';
 import { isLoadingActions } from '../isLoading/isLoadingSlice';
-import { getVolumesByTermsRequest } from '../../../api/api';
-import axios, { Axios, AxiosError, AxiosResponse } from 'axios';
+import { bookDetailsActions } from '../bookDetails/bookDetailsSlice';
+import { getVolumesByTermsRequest, getVolumeById } from '../../../api/api';
+
+export function* workBookDetails({ payload }) {
+  try {
+    const response = yield call(getVolumeById, payload);
+
+    if (response && response.status === 200) {
+      yield put(bookDetailsActions.setBookDetails(response.data));
+    }
+  } catch (error) {
+    yield put(
+      errorActions.setError({
+        title: 'Что-то пошло не так...',
+        description: 'Попробуйте еще раз.',
+      })
+    );
+  }
+}
 
 function* workGetBooksArray({ payload }) {
   const { searchValue, category, sortBy, startIndex = 0 } = payload;
@@ -39,10 +54,11 @@ function* workGetBooksArray({ payload }) {
       })
     );
   } finally {
-    yield put(yield put(isLoadingActions.setIsLoading(false)));
+    yield put(isLoadingActions.setIsLoading(false));
   }
 }
 
 export default function* booksSaga() {
   yield takeEvery('books/getBooksArray', workGetBooksArray);
+  yield takeEvery('bookDetails/getBookDetails', workBookDetails);
 }

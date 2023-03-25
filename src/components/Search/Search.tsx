@@ -1,5 +1,4 @@
-import * as React from 'react';
-import './Header.scss';
+import './Search.scss';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -9,25 +8,46 @@ import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import { FILTERS } from '../../constants/filters';
 import { isFieldEmpty } from '../../services/validators';
-import { generateErrorObject } from '../../utils/generateErrorObject';
 import { SORT_TYPES } from '../../constants/sortTypes';
 import { isLoadingActions, isLoadingSelectors } from '../../store/slices/isLoading/isLoadingSlice';
 import { errorActions } from '../../store/slices/error/errorSlice';
 import { totalItemsActions } from '../../store/slices/totalItems/totalItemsSlice';
 import { booksActions } from '../../store/slices/books/booksSlice';
-import { searchParamsActions } from '../../store/slices/searchParams/searchParamsSlice';
+import {
+  searchParamsActions,
+  searchParamsSelectors,
+} from '../../store/slices/searchParams/searchParamsSlice';
+import { useNavigate } from 'react-router-dom';
+import { PATH } from '../../constants/paths';
 
-type FormInputs = {
+export type FormInputs = {
   searchValue: string;
   sortBy: string;
-  categories: string;
+  category: string;
 };
 
-export const Header: React.FC = () => {
+export type SearchPanelStyle = {
+  flexGrow?: number;
+  position?: string;
+  top?: number;
+  left?: number;
+  borderRadius?: number;
+  height?: string;
+  flexDirection?: string;
+  alignItems?: string;
+  rowGap?: string;
+};
+
+export const Search = (style: SearchPanelStyle) => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isLoading } = useAppSelector(isLoadingSelectors.all);
-  const [sortBy, setSortBy] = useState('Relevance');
-  const [category, setCategory] = useState('All');
+  const { searchParams } = useAppSelector(searchParamsSelectors.all);
+
+  const { category, sortBy } = searchParams;
+
+  const [sortByValue, setSortBy] = useState(sortBy);
+  const [categoryValue, setCategory] = useState(category);
 
   const {
     register,
@@ -37,8 +57,7 @@ export const Header: React.FC = () => {
 
   const onSubmit = async (data: FormInputs) => {
     if (isFieldEmpty(data.searchValue)) {
-      const error = generateErrorObject('Пустой поисковый запрос', '');
-      dispatch(errorActions.setError(error));
+      dispatch(errorActions.setError({ title: 'Пустой поисковый запрос', description: '' }));
 
       return;
     }
@@ -47,6 +66,7 @@ export const Header: React.FC = () => {
     dispatch(errorActions.resetError());
     dispatch(totalItemsActions.setTotalItems(0));
     dispatch(booksActions.resetBooksArray());
+    console.log(data);
 
     const searchValue = encodeURIComponent(data.searchValue);
 
@@ -54,18 +74,15 @@ export const Header: React.FC = () => {
     dispatch(
       searchParamsActions.setSearchParams({ searchValue, category, sortBy, startIndex: 30 })
     );
+    localStorage.setItem(
+      'lastSearch',
+      JSON.stringify({ searchValue, category, sortBy, startIndex: 0 })
+    );
+    navigate(PATH.SEARCH_RESULTS);
   };
 
   return (
-    <AppBar
-      className="header"
-      data-testid="header"
-      sx={{
-        flexGrow: 1,
-        position: 'fixed',
-        background: `url('./ZoCtEVBYKzo.jpg') no-repeat top center / cover`,
-      }}
-    >
+    <AppBar className="header" data-testid="header" sx={style}>
       <h1 className="header__title" data-testid="header-title">
         Book search
       </h1>
@@ -77,6 +94,7 @@ export const Header: React.FC = () => {
               data-testid="search-input"
               variant="outlined"
               className="search-input"
+              defaultValue="Hello World"
               sx={{
                 height: '100%',
                 backgroundColor: '#fff',
@@ -110,7 +128,7 @@ export const Header: React.FC = () => {
 
         <div className="search__options">
           <select
-            defaultValue="relevance"
+            defaultValue={sortByValue}
             className="search__sortBy"
             data-testid="search-sortBy"
             {...register('sortBy')}
@@ -121,10 +139,10 @@ export const Header: React.FC = () => {
           </select>
 
           <select
-            defaultValue="All"
+            defaultValue={categoryValue}
             className="search__categories"
             data-testid="search-categories"
-            {...register('categories')}
+            {...register('category')}
             onChange={(event) => setCategory(event.target.value as string)}
           >
             <option value="0" disabled>
