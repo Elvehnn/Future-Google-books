@@ -1,28 +1,15 @@
-import './Main.scss';
-import { memo } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
-import { isLoadingSelectors } from '../../store/slices/isLoading/isLoadingSlice';
-import { Search } from '../../components/Search/Search';
-import { useAppSelector } from '../../store/hooks';
+import MainLayout from '../../components/MainLayout/MainLayout';
 
 const style = {
-  flexGrow: 0,
+  width: '70%',
+  height: '250px',
   position: 'static',
-  borderRadius: 2,
   rowGap: '20px',
+  marginTop: '30vh',
 };
 
 const Main = () => {
-  const { isLoading } = useAppSelector(isLoadingSelectors.all);
-
-  return (
-    <main className="main">
-      <Search {...style} />
-      {isLoading && <CircularProgress sx={{ position: 'absolute' }} />}
-    </main>
-  );
+  return <MainLayout searchStyle={style} background />;
 };
 
-const memoMain = memo(Main);
-
-export default memoMain;
+export default Main;

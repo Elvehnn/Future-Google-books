@@ -1,7 +1,7 @@
 import './SearchResults.scss';
 import Typography from '@mui/material/Typography';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { BookPreview } from '../../components/BookPreview/BookPreview';
+import { BookPreview } from '../BookPreview/BookPreview';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { memo, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -15,19 +15,8 @@ import {
 } from '../../store/slices/searchParams/searchParamsSlice';
 import { isLoadingActions, isLoadingSelectors } from '../../store/slices/isLoading/isLoadingSlice';
 import { ITEMS_PER_PAGE } from '../../constants/constants';
-import { Search } from '../../components/Search/Search';
-
-const style = {
-  flexGrow: 0,
-  position: 'fixed',
-  borderRadius: 2,
-  top: 0,
-  left: 0,
-  height: '200px',
-  flexDirection: 'row',
-  rowGap: '10px',
-  alignItems: 'none',
-};
+import { ErrorPage } from '../../pages/ErrorPage/ErrorPage';
+import { errorSelectors } from '../../store/slices/error/errorSlice';
 
 const SearchResults = () => {
   const dispatch = useAppDispatch();
@@ -35,6 +24,7 @@ const SearchResults = () => {
   const { booksArray } = useAppSelector(booksSelectors.all);
   const { searchParams } = useAppSelector(searchParamsSelectors.all);
   const { isLoading } = useAppSelector(isLoadingSelectors.all);
+  const { error } = useAppSelector(errorSelectors.all);
 
   const [paginationDisabled, setPaginationDisabled] = useState(false);
 
@@ -51,8 +41,7 @@ const SearchResults = () => {
   };
 
   return (
-    <main className="search-results">
-      <Search {...style} />
+    <div className="search-results">
       {totalItems ? (
         <Typography
           variant="h4"
@@ -66,11 +55,13 @@ const SearchResults = () => {
       ) : null}
 
       <div className="cards-container" style={{ transition: 'ease 0.5s' }}>
-        {booksArray.length
-          ? booksArray.map((book) => {
-              return <BookPreview key={book.id} {...book} />;
-            })
-          : null}
+        {booksArray.length ? (
+          booksArray.map((book) => {
+            return <BookPreview key={book.id} {...book} />;
+          })
+        ) : (
+          <ErrorPage {...error} />
+        )}
       </div>
 
       {booksArray.length && booksArray.length >= 30 ? (
@@ -97,7 +88,7 @@ const SearchResults = () => {
       ) : null}
 
       {isLoading && <CircularProgress sx={{ position: 'absolute' }} />}
-    </main>
+    </div>
   );
 };
 
