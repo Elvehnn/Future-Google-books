@@ -10,5 +10,27 @@
   background-position: center;
   row-gap: 20px;
   position: relative;
-  // background: url('../../../public/ZoCtEVBYKzo.jpg') no-repeat top center / cover;
+
+  @media screen and (min-width: 320px) and (max-width: 768px) {
+    height: 100%;
+    margin-top: 0;
+  }
+
+  @media screen and (max-width: 320px) {
+    height: 100%;
+    margin-top: 0;
+  }
+
+  &__search {
+    width: 100%;
+    padding: 30vh 10vh 0 10vh;
+
+    @media screen and (min-width: 320px) and (max-width: 768px) {
+      padding: 30vh 5vh 0 5vh;
+    }
+
+    @media screen and (max-width: 320px) {
+      padding: 10vh 5vh 0 5vh;
+    }
+  }
 }

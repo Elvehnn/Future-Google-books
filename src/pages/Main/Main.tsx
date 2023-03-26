@@ -1,11 +1,9 @@
 import MainLayout from '../../components/MainLayout/MainLayout';
 
 const style = {
-  width: '70%',
-  height: '250px',
   position: 'static',
   rowGap: '20px',
-  marginTop: '30vh',
+  padding: '2vh 4vh',
 };
 
 const Main = () => {

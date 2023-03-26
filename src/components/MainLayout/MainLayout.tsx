@@ -20,7 +20,9 @@ const MainLayout: FC<MainLayoutProps> = ({ children, searchStyle, background }) 
   return (
     <CSSTransition in={true} nodeRef={nodeRef} timeout={300} classNames="opacity" unmountOnExit>
       <main className="main" style={mainBackground} ref={nodeRef}>
-        <Search {...searchStyle} />
+        <section className="main__search">
+          <Search {...searchStyle} />
+        </section>
         {children}
         <Footer />
       </main>

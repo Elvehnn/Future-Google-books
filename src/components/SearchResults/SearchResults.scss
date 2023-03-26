@@ -7,9 +7,12 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  padding: 220px 4vw 4vw;
   row-gap: 20px;
   position: relative;
+  padding: 0 4vh;
+  @media screen and (max-width: 320px) {
+    margin-top: 28vh;
+  }
 
   .cards-container {
     display: flex;
